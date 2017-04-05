@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/match")
+@RequestMapping(value = "api/v1/match")
 public class MatchRestEndpoint {
 
     private MatchService matchService;
@@ -33,7 +33,7 @@ public class MatchRestEndpoint {
         return matchService.saveMatch(match);
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteMatch(@PathVariable Long id) {
         matchService.deleteMatch(id);
     }
