@@ -1,5 +1,6 @@
 package com.goldentwo.controller;
 
+import com.goldentwo.aspect.Monitored;
 import com.goldentwo.model.Match;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class MatchRestEndpoint {
         this.matchService = matchService;
     }
 
+    @Monitored
     @GetMapping(value = "")
     public List<Match> findAllMatches() {
         return matchService.findAllMatches();
