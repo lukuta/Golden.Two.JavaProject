@@ -1,4 +1,4 @@
-package com.goldentwo.aspect;
+package com.goldentwo.aspect.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;

@@ -1,6 +1,6 @@
 package com.goldentwo.controller;
 
-import com.goldentwo.aspect.Monitored;
+import com.goldentwo.aspect.annotation.Monitored;
 import com.goldentwo.model.Match;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
