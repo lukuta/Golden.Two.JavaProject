@@ -15,10 +15,14 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Builder
 @Entity
-public class Match {
+public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    private String nickname;
+    private String name;
+    private String surname;
 
 }
