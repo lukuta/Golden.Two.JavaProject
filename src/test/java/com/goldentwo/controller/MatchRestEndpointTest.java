@@ -2,7 +2,6 @@ package com.goldentwo.controller;
 
 import com.goldentwo.model.Match;
 import com.goldentwo.service.MatchService;
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -13,6 +12,8 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
 import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 public class MatchRestEndpointTest {
@@ -27,7 +28,7 @@ public class MatchRestEndpointTest {
     private Match matchTwo;
 
     @Before
-    public void initialize(){
+    public void initialize() {
         MockitoAnnotations.initMocks(this);
 
         matchOne = Match.builder().id(1L).build();
@@ -35,7 +36,7 @@ public class MatchRestEndpointTest {
     }
 
     @Test
-    public void findAllMatchesTest(){
+    public void findAllMatchesTest() {
 
         List<Match> matches = Arrays.asList(matchOne, matchTwo);
 
@@ -45,13 +46,13 @@ public class MatchRestEndpointTest {
 
         List<Match> matchesFromSut = sut.findAllMatches();
 
-        Assertions.assertThat(matchesFromSut)
+        assertThat(matchesFromSut)
                 .isNotNull()
                 .isEqualTo(matches);
     }
 
     @Test
-    public void findMatchByIdTest(){
+    public void findMatchByIdTest() {
 
         Long matchId = matchOne.getId();
 
@@ -61,13 +62,13 @@ public class MatchRestEndpointTest {
 
         Match matchFromSut = sut.findMatchById(matchId);
 
-        Assertions.assertThat(matchFromSut)
+        assertThat(matchFromSut)
                 .isNotNull()
                 .isEqualTo(matchOne);
     }
 
     @Test
-    public void saveMatchTest(){
+    public void saveMatchTest() {
 
         Mockito
                 .when(matchService.saveMatch(matchOne))
@@ -75,13 +76,12 @@ public class MatchRestEndpointTest {
 
         Match savedMatchFromSut = sut.saveMatch(matchOne);
 
-        Assertions.assertThat(savedMatchFromSut)
+        assertThat(savedMatchFromSut)
                 .isNotNull()
                 .isEqualTo(matchOne);
     }
 
     //TODO: deleteMatchTest() ??
-
 
 
 }
