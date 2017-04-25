@@ -1,36 +1,16 @@
 package com.goldentwo.service;
 
 import com.goldentwo.model.Match;
-import com.goldentwo.repository.MatchRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@Service
-public class MatchService {
+public interface MatchService {
+    Match findMatchById(Long id);
 
-    private MatchRepository matchRepository;
+    List<Match> findAllMatches();
 
-    @Autowired
-    public MatchService(MatchRepository matchRepository) {
-        this.matchRepository = matchRepository;
-    }
+    Match saveMatch(Match match);
 
-    public Match findMatchById(Long id) {
-        return matchRepository.findOne(id);
-    }
-
-    public List<Match> findAllMatches() {
-        return matchRepository.findAll();
-    }
-
-    public Match saveMatch(Match match) {
-        return matchRepository.save(match);
-    }
-
-    public void deleteMatch(Long id) {
-        matchRepository.delete(id);
-    }
-
+    ResponseEntity<?> deleteMatch(Long id);
 }

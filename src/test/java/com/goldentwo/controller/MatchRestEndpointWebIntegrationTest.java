@@ -22,7 +22,7 @@ public class MatchRestEndpointWebIntegrationTest {
 
     @Test
     public void testListAll() {
-        ResponseEntity<String> response = restTemplate.getForEntity("/api/v1/match/", String.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/matches/", String.class);
 
         assertThat(response.getStatusCode())
                 .isEqualTo(HttpStatus.OK);
