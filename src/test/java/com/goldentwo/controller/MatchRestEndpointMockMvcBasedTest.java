@@ -2,7 +2,7 @@ package com.goldentwo.controller;
 
 import com.goldentwo.model.Match;
 import com.goldentwo.repository.MatchRepository;
-import com.goldentwo.service.MatchService;
+import com.goldentwo.service.impl.MatchServiceImpl;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest({MatchRestEndpoint.class, MatchService.class})
+@WebMvcTest({MatchRestEndpoint.class, MatchServiceImpl.class})
 @ActiveProfiles("test")
 public class MatchRestEndpointMockMvcBasedTest {
 
@@ -46,7 +46,7 @@ public class MatchRestEndpointMockMvcBasedTest {
                 .thenReturn(matchList);
 
         mockMvc.perform(
-                get("/api/v1/match/").accept(MediaType.APPLICATION_JSON)
+                get("/matches/").accept(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))

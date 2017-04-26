@@ -1,15 +1,20 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.aspect.annotation.Monitored;
+import com.goldentwo.exception.MatchException;
 import com.goldentwo.model.Match;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping(value = "api/v1/match")
+@RequestMapping(value = "matches")
 public class MatchRestEndpoint {
 
     private MatchService matchService;
@@ -20,7 +25,7 @@ public class MatchRestEndpoint {
     }
 
     @Monitored
-    @GetMapping(value = "")
+    @GetMapping()
     public List<Match> findAllMatches() {
         return matchService.findAllMatches();
     }
@@ -30,14 +35,22 @@ public class MatchRestEndpoint {
         return matchService.findMatchById(id);
     }
 
-    @PostMapping(value = "")
+    @PostMapping()
     public Match saveMatch(@RequestBody Match match) {
         return matchService.saveMatch(match);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deleteMatch(@PathVariable Long id) {
-        matchService.deleteMatch(id);
+    public ResponseEntity<?> deleteMatch(@PathVariable Long id) {
+        return matchService.deleteMatch(id);
     }
 
+    @ExceptionHandler(MatchException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handleException(MatchException ex) {
+        Map<String, String> response = new HashMap<>();
+        response.put("Message: ", ex.getMessage());
+
+        return response;
+    }
 }
