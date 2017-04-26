@@ -1,7 +1,7 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.model.Match;
-import com.goldentwo.service.impl.MatchServiceImpl;
+import com.goldentwo.service.MatchService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MatchRestEndpointTest {
 
     @Mock
-    private MatchServiceImpl matchService;
+    private MatchService matchService;
 
     @InjectMocks
     private MatchRestEndpoint sut;
