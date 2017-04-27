@@ -1,10 +1,12 @@
 package com.goldentwo.service.impl;
 
+import com.goldentwo.cache.CacheConstants;
 import com.goldentwo.exception.PlayerException;
 import com.goldentwo.model.Player;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,7 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
+    @Cacheable(CacheConstants.PLAYERS_CACHE)
     public List<Player> findAllPlayers() {
         return playerRepository.findAll();
     }
