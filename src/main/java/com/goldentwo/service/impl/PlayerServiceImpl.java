@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,20 +24,19 @@ public class PlayerServiceImpl implements PlayerService {
 
     @Override
     public PlayerDto findPlayerById(Long id) {
-        if (!playerRepository.exists(id)) {
-            throw new PlayerException("There is no player with given id");
-        }
-
-        return playerRepository.findOne(id).asDto();
+        return Optional.ofNullable(playerRepository.findOne(id))
+                .orElseThrow(
+                        () -> new PlayerException("Player doesn't exists!"))
+                .asDto();
     }
 
     @Override
     public PlayerDto findPlayerByNickname(String nickname) {
-        Player player = playerRepository
+        return playerRepository
                 .findByNickname(nickname)
-                .orElseThrow(() -> new PlayerException("There is no player with given nickname"));
-
-        return player.asDto();
+                .orElseThrow(
+                        () -> new PlayerException("There is no player with given nickname")
+                ).asDto();
     }
 
     @Override
