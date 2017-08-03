@@ -1,8 +1,8 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.aspect.annotation.Monitored;
+import com.goldentwo.dto.MatchDto;
 import com.goldentwo.exception.MatchException;
-import com.goldentwo.model.Match;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,22 +26,22 @@ public class MatchRestEndpoint {
 
     @Monitored
     @GetMapping()
-    public List<Match> findAllMatches() {
+    public List<MatchDto> findAllMatches() {
         return matchService.findAllMatches();
     }
 
     @GetMapping(value = "/{id}")
-    public Match findMatchById(@PathVariable Long id) {
+    public MatchDto findMatchById(@PathVariable Long id) {
         return matchService.findMatchById(id);
     }
 
     @PostMapping()
-    public Match saveMatch(@RequestBody Match match) {
+    public MatchDto saveMatch(@RequestBody MatchDto match) {
         return matchService.saveMatch(match);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteMatch(@PathVariable Long id) {
+    public ResponseEntity deleteMatch(@PathVariable Long id) {
         return matchService.deleteMatch(id);
     }
 

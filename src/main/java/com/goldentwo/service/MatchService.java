@@ -1,16 +1,16 @@
 package com.goldentwo.service;
 
-import com.goldentwo.model.Match;
+import com.goldentwo.dto.MatchDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface MatchService {
-    Match findMatchById(Long id);
+    MatchDto findMatchById(Long id);
 
-    List<Match> findAllMatches();
+    List<MatchDto> findAllMatches();
 
-    Match saveMatch(Match match);
+    MatchDto saveMatch(MatchDto match);
 
-    ResponseEntity<?> deleteMatch(Long id);
+    ResponseEntity deleteMatch(Long id);
 }

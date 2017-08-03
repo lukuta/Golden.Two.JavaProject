@@ -1,8 +1,8 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.aspect.annotation.Monitored;
+import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.exception.PlayerException;
-import com.goldentwo.model.Player;
 import com.goldentwo.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,27 +26,27 @@ public class PlayerRestEndpoint {
 
     @Monitored
     @GetMapping
-    public List<Player> findAllPlayers() {
+    public List<PlayerDto> findAllPlayers() {
         return playerService.findAllPlayers();
     }
 
     @GetMapping(value = "find/{id}")
-    public Player findPlayerById(@PathVariable Long id) {
+    public PlayerDto findPlayerById(@PathVariable Long id) {
         return playerService.findPlayerById(id);
     }
 
     @GetMapping(value = "find")
-    public Player findPlayerByNickname(@RequestParam("nickname") String nickname){
+    public PlayerDto findPlayerByNickname(@RequestParam("nickname") String nickname){
         return playerService.findPlayerByNickname(nickname);
     }
 
     @PostMapping()
-    public Player savePlayer(@RequestBody Player player) {
+    public PlayerDto savePlayer(@RequestBody PlayerDto player) {
         return playerService.savePlayer(player);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deletePlayer(@PathVariable Long id) {
+    public ResponseEntity deletePlayer(@PathVariable Long id) {
         return playerService.deletePlayer(id);
     }
 

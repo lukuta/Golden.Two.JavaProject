@@ -24,6 +24,12 @@ public class Player {
     private String name;
     private String surname;
 
+    public Player(PlayerDto playerDto) {
+        this.nickname = playerDto.getNickname();
+        this.name = playerDto.getName();
+        this.surname = playerDto.getSurname();
+    }
+
     public PlayerDto asDto() {
         return PlayerDto.builder()
                 .nickname(nickname)

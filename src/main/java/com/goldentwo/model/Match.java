@@ -22,6 +22,10 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    public Match(MatchDto matchdto) {
+        this.id = matchdto.getId();
+    }
+
     public MatchDto asDto() {
         return MatchDto.builder()
                 .id(id)
