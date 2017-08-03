@@ -1,5 +1,6 @@
 package com.goldentwo.model;
 
+import com.goldentwo.dto.PlayerDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +23,13 @@ public class Player {
     private String nickname;
     private String name;
     private String surname;
+
+    public PlayerDto asDto() {
+        return PlayerDto.builder()
+                .nickname(nickname)
+                .name(name)
+                .surname(surname)
+                .build();
+    }
 
 }

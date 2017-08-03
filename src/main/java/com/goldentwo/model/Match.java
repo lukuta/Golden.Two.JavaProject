@@ -1,5 +1,6 @@
 package com.goldentwo.model;
 
+import com.goldentwo.dto.MatchDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,5 +21,11 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    public MatchDto asDto() {
+        return MatchDto.builder()
+                .id(id)
+                .build();
+    }
 
 }
