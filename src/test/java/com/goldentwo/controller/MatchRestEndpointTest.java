@@ -1,6 +1,6 @@
 package com.goldentwo.controller;
 
-import com.goldentwo.model.Match;
+import com.goldentwo.dto.MatchDto;
 import com.goldentwo.service.MatchService;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,27 +24,27 @@ public class MatchRestEndpointTest {
     @InjectMocks
     private MatchRestEndpoint sut;
 
-    private Match matchOne;
-    private Match matchTwo;
+    private MatchDto matchOne;
+    private MatchDto matchTwo;
 
     @Before
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        matchOne = Match.builder().id(1L).build();
-        matchTwo = Match.builder().id(2L).build();
+        matchOne = MatchDto.builder().id(1L).build();
+        matchTwo = MatchDto.builder().id(2L).build();
     }
 
     @Test
     public void findAllMatchesTest() {
 
-        List<Match> matches = Arrays.asList(matchOne, matchTwo);
+        List<MatchDto> matches = Arrays.asList(matchOne, matchTwo);
 
         Mockito
                 .when(matchService.findAllMatches())
                 .thenReturn(matches);
 
-        List<Match> matchesFromSut = sut.findAllMatches();
+        List<MatchDto> matchesFromSut = sut.findAllMatches();
 
         assertThat(matchesFromSut)
                 .isNotNull()
@@ -60,7 +60,7 @@ public class MatchRestEndpointTest {
                 .when(matchService.findMatchById(matchId))
                 .thenReturn(matchOne);
 
-        Match matchFromSut = sut.findMatchById(matchId);
+        MatchDto matchFromSut = sut.findMatchById(matchId);
 
         assertThat(matchFromSut)
                 .isNotNull()
@@ -74,7 +74,7 @@ public class MatchRestEndpointTest {
                 .when(matchService.saveMatch(matchOne))
                 .thenReturn(matchOne);
 
-        Match savedMatchFromSut = sut.saveMatch(matchOne);
+        MatchDto savedMatchFromSut = sut.saveMatch(matchOne);
 
         assertThat(savedMatchFromSut)
                 .isNotNull()

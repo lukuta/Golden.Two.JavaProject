@@ -1,5 +1,6 @@
 package com.goldentwo.controller;
 
+import com.goldentwo.dto.MatchDto;
 import com.goldentwo.model.Match;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class MatchRestEndpointJsonMapperTest {
 
     @Autowired
-    private JacksonTester<Match> matchJacksonTester;
+    private JacksonTester<MatchDto> matchJacksonTester;
 
     @Test
     public void testSerialize() throws IOException {
-        Match match = Match.builder().id(10L).build();
+        MatchDto match = MatchDto.builder().id(10L).build();
 
         File expectedMatch = new ClassPathResource("expected-match.json").getFile();
-        JsonContent<Match> converted = this.matchJacksonTester.write(match);
+        JsonContent<MatchDto> converted = this.matchJacksonTester.write(match);
 
         assertThat(converted)
                 .isEqualToJson(expectedMatch, JSONCompareMode.STRICT);

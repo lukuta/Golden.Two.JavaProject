@@ -13,5 +13,5 @@ import java.util.Set;
 @AllArgsConstructor
 public class TeamDto {
     private String name;
-    private Set<PlayerDto> players;
+    private Set<String> playerNicknames;
 }
