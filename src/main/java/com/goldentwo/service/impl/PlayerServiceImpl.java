@@ -39,8 +39,9 @@ public class PlayerServiceImpl implements PlayerService {
                 ).asDto();
     }
 
-    @Override
+//    TODO: find usage for cacheable
 //    @Cacheable(CacheConstants.PLAYERS_CACHE)
+    @Override
     public List<PlayerDto> findAllPlayers() {
         return playerRepository.findAll().stream()
                 .map(Player::asDto)
