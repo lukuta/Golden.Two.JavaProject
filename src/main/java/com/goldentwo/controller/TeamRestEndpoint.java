@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class TeamRestEndpoint {
     }
 
     @PostMapping
-    public TeamDto createTeam(@RequestBody TeamDto teamDto) {
+    public TeamDto createTeam(@RequestBody @Valid TeamDto teamDto) {
         return teamService.saveTeam(teamDto);
     }
 
