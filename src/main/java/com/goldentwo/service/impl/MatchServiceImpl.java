@@ -1,5 +1,6 @@
 package com.goldentwo.service.impl;
 
+import com.goldentwo.dto.MatchDto;
 import com.goldentwo.exception.MatchException;
 import com.goldentwo.model.Match;
 import com.goldentwo.repository.MatchRepository;
@@ -9,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MatchServiceImpl implements MatchService {
@@ -21,25 +24,29 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public Match findMatchById(Long id) {
-        if (!matchRepository.exists(id)) {
-            throw new MatchException("There is no match with given id");
-        }
-        return matchRepository.findOne(id);
+    public MatchDto findMatchById(Long id) {
+        return Optional.ofNullable(matchRepository.findOne(id))
+                .orElseThrow(
+                        () -> new MatchException("Match doesn't exists!"))
+                .asDto();
     }
 
     @Override
-    public List<Match> findAllMatches() {
-        return matchRepository.findAll();
+    public List<MatchDto> findAllMatches() {
+        return matchRepository.findAll().stream()
+                .map(Match::asDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Match saveMatch(Match match) {
-        return matchRepository.saveAndFlush(match);
+    public MatchDto saveMatch(MatchDto matchdto) {
+        Match match = new Match(matchdto);
+
+        return matchRepository.saveAndFlush(match).asDto();
     }
 
     @Override
-    public ResponseEntity<?> deleteMatch(Long id) {
+    public ResponseEntity deleteMatch(Long id) {
         matchRepository.delete(id);
 
         return ResponseEntity.ok().build();

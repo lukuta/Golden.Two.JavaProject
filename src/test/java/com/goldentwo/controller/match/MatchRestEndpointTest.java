@@ -1,6 +1,7 @@
-package com.goldentwo.controller;
+package com.goldentwo.controller.match;
 
-import com.goldentwo.model.Match;
+import com.goldentwo.controller.MatchRestEndpoint;
+import com.goldentwo.dto.MatchDto;
 import com.goldentwo.service.MatchService;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
@@ -24,27 +26,26 @@ public class MatchRestEndpointTest {
     @InjectMocks
     private MatchRestEndpoint sut;
 
-    private Match matchOne;
-    private Match matchTwo;
+    private MatchDto matchOne;
+    private MatchDto matchTwo;
 
     @Before
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        matchOne = Match.builder().id(1L).build();
-        matchTwo = Match.builder().id(2L).build();
+        matchOne = MatchDto.builder().id(1L).build();
+        matchTwo = MatchDto.builder().id(2L).build();
     }
 
     @Test
     public void findAllMatchesTest() {
-
-        List<Match> matches = Arrays.asList(matchOne, matchTwo);
+        List<MatchDto> matches = Arrays.asList(matchOne, matchTwo);
 
         Mockito
                 .when(matchService.findAllMatches())
                 .thenReturn(matches);
 
-        List<Match> matchesFromSut = sut.findAllMatches();
+        List<MatchDto> matchesFromSut = sut.findAllMatches();
 
         assertThat(matchesFromSut)
                 .isNotNull()
@@ -53,14 +54,13 @@ public class MatchRestEndpointTest {
 
     @Test
     public void findMatchByIdTest() {
-
         Long matchId = matchOne.getId();
 
         Mockito
                 .when(matchService.findMatchById(matchId))
                 .thenReturn(matchOne);
 
-        Match matchFromSut = sut.findMatchById(matchId);
+        MatchDto matchFromSut = sut.findMatchById(matchId);
 
         assertThat(matchFromSut)
                 .isNotNull()
@@ -69,19 +69,32 @@ public class MatchRestEndpointTest {
 
     @Test
     public void saveMatchTest() {
-
         Mockito
                 .when(matchService.saveMatch(matchOne))
                 .thenReturn(matchOne);
 
-        Match savedMatchFromSut = sut.saveMatch(matchOne);
+        MatchDto savedMatchFromSut = sut.saveMatch(matchOne);
 
         assertThat(savedMatchFromSut)
                 .isNotNull()
                 .isEqualTo(matchOne);
     }
 
-    //TODO: deleteMatchTest() ??
+    @Test
+    public void deleteMatchTest() {
+        Long id = 1L;
+        ResponseEntity expectedResponse = ResponseEntity.ok().build();
+
+        Mockito
+                .when(matchService.deleteMatch(id))
+                .thenReturn(expectedResponse);
+
+        ResponseEntity responseFromSut = sut.deleteMatch(id);
+
+        assertThat(responseFromSut)
+                .isNotNull()
+                .isEqualTo(expectedResponse);
+    }
 
 
 }

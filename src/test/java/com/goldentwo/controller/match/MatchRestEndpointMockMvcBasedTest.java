@@ -1,5 +1,6 @@
-package com.goldentwo.controller;
+package com.goldentwo.controller.match;
 
+import com.goldentwo.controller.MatchRestEndpoint;
 import com.goldentwo.model.Match;
 import com.goldentwo.repository.MatchRepository;
 import com.goldentwo.service.MatchService;
@@ -23,9 +24,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @WebMvcTest({MatchRestEndpoint.class, MatchService.class})
-@ActiveProfiles("test")
 public class MatchRestEndpointMockMvcBasedTest {
 
     @Autowired

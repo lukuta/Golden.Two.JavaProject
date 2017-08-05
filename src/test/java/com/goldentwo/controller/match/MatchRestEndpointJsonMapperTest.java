@@ -1,6 +1,6 @@
-package com.goldentwo.controller;
+package com.goldentwo.controller.match;
 
-import com.goldentwo.model.Match;
+import com.goldentwo.dto.MatchDto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -16,19 +16,19 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @JsonTest
+@RunWith(SpringRunner.class)
 public class MatchRestEndpointJsonMapperTest {
 
     @Autowired
-    private JacksonTester<Match> matchJacksonTester;
+    private JacksonTester<MatchDto> matchJacksonTester;
 
     @Test
     public void testSerialize() throws IOException {
-        Match match = Match.builder().id(10L).build();
+        MatchDto match = MatchDto.builder().id(10L).build();
 
         File expectedMatch = new ClassPathResource("expected-match.json").getFile();
-        JsonContent<Match> converted = this.matchJacksonTester.write(match);
+        JsonContent<MatchDto> converted = this.matchJacksonTester.write(match);
 
         assertThat(converted)
                 .isEqualToJson(expectedMatch, JSONCompareMode.STRICT);

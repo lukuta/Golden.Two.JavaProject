@@ -1,18 +1,18 @@
 package com.goldentwo.service;
 
-import com.goldentwo.model.Player;
+import com.goldentwo.dto.PlayerDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface PlayerService {
-    Player findPlayerById(Long id);
+    PlayerDto findPlayerById(Long id);
 
-    Player findPlayerByNickname(String nickname);
+    PlayerDto findPlayerByNickname(String nickname);
 
-    List<Player> findAllPlayers();
+    List<PlayerDto> findAllPlayers();
 
-    Player savePlayer(Player match);
+    PlayerDto savePlayer(PlayerDto match);
 
-    ResponseEntity<?> deletePlayer(Long id);
+    ResponseEntity deletePlayer(Long id);
 }
