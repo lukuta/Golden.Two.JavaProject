@@ -30,7 +30,7 @@ public class PlayerRestEndpoint {
         return playerService.findAllPlayers();
     }
 
-    @GetMapping(value = "find/{id}")
+    @GetMapping(value = "/{id}")
     public PlayerDto findPlayerById(@PathVariable Long id) {
         return playerService.findPlayerById(id);
     }
