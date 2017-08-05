@@ -1,7 +1,6 @@
-package com.goldentwo.controller;
+package com.goldentwo.controller.match;
 
 import com.goldentwo.dto.MatchDto;
-import com.goldentwo.model.Match;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -17,8 +16,8 @@ import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@RunWith(SpringRunner.class)
 @JsonTest
+@RunWith(SpringRunner.class)
 public class MatchRestEndpointJsonMapperTest {
 
     @Autowired

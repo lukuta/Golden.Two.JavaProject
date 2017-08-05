@@ -1,5 +1,6 @@
-package com.goldentwo.controller;
+package com.goldentwo.controller.match;
 
+import com.goldentwo.controller.MatchRestEndpoint;
 import com.goldentwo.dto.MatchDto;
 import com.goldentwo.service.MatchService;
 import org.junit.Before;
@@ -8,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
@@ -37,7 +39,6 @@ public class MatchRestEndpointTest {
 
     @Test
     public void findAllMatchesTest() {
-
         List<MatchDto> matches = Arrays.asList(matchOne, matchTwo);
 
         Mockito
@@ -53,7 +54,6 @@ public class MatchRestEndpointTest {
 
     @Test
     public void findMatchByIdTest() {
-
         Long matchId = matchOne.getId();
 
         Mockito
@@ -69,7 +69,6 @@ public class MatchRestEndpointTest {
 
     @Test
     public void saveMatchTest() {
-
         Mockito
                 .when(matchService.saveMatch(matchOne))
                 .thenReturn(matchOne);
@@ -81,7 +80,21 @@ public class MatchRestEndpointTest {
                 .isEqualTo(matchOne);
     }
 
-    //TODO: deleteMatchTest() ??
+    @Test
+    public void deleteMatchTest() {
+        Long id = 1L;
+        ResponseEntity expectedResponse = ResponseEntity.ok().build();
+
+        Mockito
+                .when(matchService.deleteMatch(id))
+                .thenReturn(expectedResponse);
+
+        ResponseEntity responseFromSut = sut.deleteMatch(id);
+
+        assertThat(responseFromSut)
+                .isNotNull()
+                .isEqualTo(expectedResponse);
+    }
 
 
 }
