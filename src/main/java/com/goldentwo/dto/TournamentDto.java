@@ -15,5 +15,5 @@ public class TournamentDto {
 
     private Long id;
     private String name;
-    private Set<TeamDto> teams;
+    private Set<MemberDto> members;
 }

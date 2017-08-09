@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Player {
+public class Player extends Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

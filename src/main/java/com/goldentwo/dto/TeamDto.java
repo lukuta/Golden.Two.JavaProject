@@ -13,7 +13,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamDto {
+public class TeamDto extends MemberDto {
     @NotNull
     private String name;
     @NotEmpty

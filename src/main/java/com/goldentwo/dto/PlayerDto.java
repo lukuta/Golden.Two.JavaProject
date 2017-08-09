@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PlayerDto {
+public class PlayerDto extends MemberDto {
     @NotNull
     private String nickname;
     private String name;

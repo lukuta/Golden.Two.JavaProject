@@ -1,6 +1,6 @@
 package com.goldentwo.model;
 
-import com.goldentwo.dto.TeamDto;
+import com.goldentwo.dto.MemberDto;
 import com.goldentwo.dto.TournamentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,12 +31,12 @@ public class Tournament {
     private Set<Team> teams;
 
     public TournamentDto asDto() {
-        Set<TeamDto> teamDtos = teams.stream()
+        Set<MemberDto> teamDtos = teams.stream()
                 .map(Team::asDto)
                 .collect(Collectors.toSet());
 
         return TournamentDto.builder()
-                .id(id).name(name).teams(teamDtos).build();
+                .id(id).name(name).members(teamDtos).build();
     }
 
 }

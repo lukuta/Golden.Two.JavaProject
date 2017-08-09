@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Team {
+public class Team extends Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
