@@ -14,6 +14,9 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamDto extends MemberDto {
+
+    @NotNull
+    private Long id;
     @NotNull
     private String name;
     @NotEmpty

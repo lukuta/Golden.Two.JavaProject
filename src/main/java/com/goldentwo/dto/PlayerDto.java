@@ -12,6 +12,9 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayerDto extends MemberDto {
+
+    @NotNull
+    private Long id;
     @NotNull
     private String nickname;
     private String name;

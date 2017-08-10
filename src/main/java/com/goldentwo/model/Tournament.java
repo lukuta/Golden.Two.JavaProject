@@ -26,13 +26,12 @@ public class Tournament {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @NotEmpty
     @OneToMany
-    private Set<Team> teams;
+    private Set<Member> members;
 
     public TournamentDto asDto() {
-        Set<MemberDto> teamDtos = teams.stream()
-                .map(Team::asDto)
+        Set<MemberDto> teamDtos = members.stream()
+                .map(Member::asDto)
                 .collect(Collectors.toSet());
 
         return TournamentDto.builder()

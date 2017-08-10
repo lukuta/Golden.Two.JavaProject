@@ -3,9 +3,7 @@ package com.goldentwo.controller;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,6 +21,11 @@ public class TournamentRestEndpoint {
     @GetMapping
     public List<TournamentDto> findAllTournaments() {
         return tournamentService.findAllTournaments();
+    }
+
+    @PostMapping
+    public TournamentDto createTournament(@RequestBody TournamentDto tournamentDto) {
+        return tournamentService.saveTournament(tournamentDto);
     }
 
 }
