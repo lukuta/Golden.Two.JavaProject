@@ -1,10 +1,7 @@
 package com.goldentwo.service.impl;
 
-import com.goldentwo.dto.PlayerDto;
-import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.PlayerException;
-import com.goldentwo.model.Member;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.Tournament;
@@ -47,26 +44,12 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public TournamentDto saveTournament(TournamentDto tournamentDto) {
-        Set<Member> members;
+        Set<Team> teams;
 
-        if (tournamentDto.getMembers().size() > 0) {
-            if (tournamentDto.getMembers().iterator().next() instanceof PlayerDto) {
-                members = tournamentDto.getMembers()
-                        .stream().map(memberDto -> {
-                            PlayerDto playerDto = (PlayerDto) memberDto;
-                            return Player.builder()
-                                    .id(playerDto.getId())
-                                    .name(playerDto.getName())
-                                    .nickname(playerDto.getNickname())
-                                    .surname(playerDto.getSurname())
-                                    .build();
-                        }).collect(Collectors.toSet());
-            } else {
+        if (tournamentDto.getTeams().size() > 0) {
 
-                members = tournamentDto.getMembers()
-                        .stream().map(memberDto -> {
-                            TeamDto teamDto = (TeamDto) memberDto;
-
+                teams = tournamentDto.getTeams()
+                        .stream().map(teamDto -> {
                             Set<Player> teamMates = new HashSet<>();
                             teamDto.getPlayerNicknames().forEach(
                                     nickname -> {
@@ -84,16 +67,16 @@ public class TournamentServiceImpl implements TournamentService {
                                     .players(teamMates)
                                     .build();
                         }).collect(Collectors.toSet());
-            }
+
         } else {
-            members = new HashSet<>();
+            teams = new HashSet<>();
         }
 
         return tournamentRepository.save(
                 Tournament.builder()
                         .id(tournamentDto.getId())
                 .name(tournamentDto.getName())
-                .members(members)
+                .members(teams)
                 .build()
         ).asDto();
     }

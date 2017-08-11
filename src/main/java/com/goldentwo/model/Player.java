@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Player extends Member {
+public class Player {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +32,7 @@ public class Player extends Member {
 
     public PlayerDto asDto() {
         return PlayerDto.builder()
+                .id(id)
                 .nickname(nickname)
                 .name(name)
                 .surname(surname)

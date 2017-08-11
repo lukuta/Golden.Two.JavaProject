@@ -1,12 +1,11 @@
 package com.goldentwo.model;
 
-import com.goldentwo.dto.MemberDto;
+import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -27,15 +26,15 @@ public class Tournament {
     private String name;
 
     @OneToMany
-    private Set<Member> members;
+    private Set<Team> members;
 
     public TournamentDto asDto() {
-        Set<MemberDto> teamDtos = members.stream()
-                .map(Member::asDto)
+        Set<TeamDto> teamDtos = members.stream()
+                .map(Team::asDto)
                 .collect(Collectors.toSet());
 
         return TournamentDto.builder()
-                .id(id).name(name).members(teamDtos).build();
+                .id(id).name(name).teams(teamDtos).build();
     }
 
 }
