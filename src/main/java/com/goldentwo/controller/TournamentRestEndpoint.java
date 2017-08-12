@@ -1,6 +1,7 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.model.Tournament;
 import com.goldentwo.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,11 @@ public class TournamentRestEndpoint {
     @GetMapping(value = "/{id}")
     public TournamentDto findTournamentById(@PathVariable Long id) {
         return tournamentService.findTournamentById(id);
+    }
+
+    @GetMapping(value = "/{name}")
+    public TournamentDto findTournamentByName(@PathVariable String name) {
+        return tournamentService.findTournamentByName(name);
     }
 
     @PostMapping

@@ -2,7 +2,7 @@ package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.exception.PlayerException;
-import com.goldentwo.exception.TeamException;
+import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.repository.PlayerRepository;
@@ -31,7 +31,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamDto findTeamById(Long id) {
         return Optional.ofNullable(teamRepository.findOne(id))
                 .orElseThrow(
-                        () -> new TeamException("Team doesn't exists!"))
+                        () -> new TournamentException("Team doesn't exists!"))
                 .asDto();
     }
 
@@ -39,7 +39,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamDto findTeamByName(String name) {
         return teamRepository.findByName(name)
                 .orElseThrow(
-                        () -> new TeamException("Team not found!"))
+                        () -> new TournamentException("Team not found!"))
                 .asDto();
     }
 

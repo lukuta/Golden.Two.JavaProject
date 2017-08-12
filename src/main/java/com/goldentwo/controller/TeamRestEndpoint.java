@@ -1,7 +1,7 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.dto.TeamDto;
-import com.goldentwo.exception.TeamException;
+import com.goldentwo.exception.TournamentException;
 import com.goldentwo.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,9 +48,9 @@ public class TeamRestEndpoint {
         return teamService.deleteTeam(id);
     }
 
-    @ExceptionHandler(TeamException.class)
+    @ExceptionHandler(TournamentException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(TeamException ex) {
+    public Map<String, String> handleException(TournamentException ex) {
         Map<String, String> response = new HashMap<>();
         response.put("Message", ex.getMessage());
 

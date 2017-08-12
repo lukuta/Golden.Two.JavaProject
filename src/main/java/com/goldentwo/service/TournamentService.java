@@ -9,6 +9,8 @@ public interface TournamentService {
 
     TournamentDto findTournamentById(Long id);
 
+    TournamentDto findTournamentByName(String name);
+
     List<TournamentDto> findAllTournaments();
 
     TournamentDto saveTournament(TournamentDto tournamentDto);

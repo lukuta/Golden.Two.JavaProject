@@ -2,6 +2,7 @@ package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.PlayerException;
+import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.Tournament;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,16 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public TournamentDto findTournamentById(Long id) {
-        return tournamentRepository.findOne(id).asDto();
+        return Optional.ofNullable(tournamentRepository.findOne(id))
+                .orElseThrow(() -> new TournamentException("Tournament " + id + " doesn't exist!"))
+                .asDto();
+    }
+
+    @Override
+    public TournamentDto findTournamentByName(String name) {
+        return tournamentRepository.findByName(name)
+                .orElseThrow(() -> new TournamentException("Tournament " + name + " doesn't exist!"))
+                .asDto();
     }
 
     @Override
