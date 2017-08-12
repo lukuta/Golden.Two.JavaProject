@@ -3,6 +3,7 @@ package com.goldentwo.controller.tournament;
 import com.goldentwo.controller.TournamentRestEndpoint;
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.exception.TournamentException;
 import com.goldentwo.service.TournamentService;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -12,11 +13,15 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
 public class TournamentRestEndpointTest {
@@ -31,6 +36,8 @@ public class TournamentRestEndpointTest {
     private TeamDto teamTwo;
     private TournamentDto tournamentOne;
     private TournamentDto tournamentTwo;
+
+    private MockMvc mockMvc;
 
     @Before
     public void initialize() {
@@ -56,6 +63,8 @@ public class TournamentRestEndpointTest {
                 .name("PGL")
                 .teams(Sets.newHashSet(teamTwo, teamOne))
                 .build();
+
+        mockMvc = MockMvcBuilders.standaloneSetup(new TournamentException(), tournamentService).build();
     }
 
     @Test
@@ -87,5 +96,33 @@ public class TournamentRestEndpointTest {
                 .isNotNull()
                 .isEqualTo(tournamentOne);
     }
+
+    @Test
+    public void findTournamentByIdWhenNotExist() throws Exception {
+        Long tournamentId = 2L;
+
+        Mockito
+                .when(tournamentService.findTournamentById(tournamentId))
+                .thenThrow(new TournamentException("Tournament " + tournamentId + "doesn't exist"));
+
+        mockMvc.perform(get("/tournaments/{id}", tournamentId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void findTournamentByName() {
+        String tournamentName = "ELeague";
+
+        Mockito
+                .when(tournamentService.findTournamentByName(tournamentName))
+                .thenReturn(tournamentOne);
+
+        TournamentDto tournamentDto = sut.findTournamentByName(tournamentName);
+
+        assertThat(tournamentDto)
+                .isNotNull()
+                .isEqualTo(tournamentOne);
+    }
+
 
 }
