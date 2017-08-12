@@ -83,6 +83,8 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public ResponseEntity deleteTournament(Long id) {
-        return null;
+        tournamentRepository.delete(id);
+
+        return ResponseEntity.ok().build();
     }
 }
