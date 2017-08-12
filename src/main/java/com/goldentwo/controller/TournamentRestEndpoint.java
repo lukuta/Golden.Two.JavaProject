@@ -24,6 +24,11 @@ public class TournamentRestEndpoint {
         return tournamentService.findAllTournaments();
     }
 
+    @GetMapping(value = "/{id}")
+    public TournamentDto findTournamentById(@PathVariable Long id) {
+        return tournamentService.findTournamentById(id);
+    }
+
     @PostMapping
     public TournamentDto createTournament(@RequestBody TournamentDto tournamentDto) {
         return tournamentService.saveTournament(tournamentDto);

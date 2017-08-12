@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,10 +27,10 @@ public class Tournament {
     private String name;
 
     @OneToMany
-    private Set<Team> members;
+    private Set<Team> teams = new HashSet<>();
 
     public TournamentDto asDto() {
-        Set<TeamDto> teamDtos = members.stream()
+        Set<TeamDto> teamDtos = teams.stream()
                 .map(Team::asDto)
                 .collect(Collectors.toSet());
 

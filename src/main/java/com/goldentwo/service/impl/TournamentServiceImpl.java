@@ -76,7 +76,7 @@ public class TournamentServiceImpl implements TournamentService {
                 Tournament.builder()
                         .id(tournamentDto.getId())
                 .name(tournamentDto.getName())
-                .members(teams)
+                .teams(teams)
                 .build()
         ).asDto();
     }
