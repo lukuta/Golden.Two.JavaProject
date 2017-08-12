@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -32,10 +33,9 @@ public class TournamentRestEndpointTest {
     @InjectMocks
     private TournamentRestEndpoint sut;
 
-    private TeamDto teamOne;
-    private TeamDto teamTwo;
     private TournamentDto tournamentOne;
     private TournamentDto tournamentTwo;
+    private TournamentDto tournamentWithoutId;
 
     private MockMvc mockMvc;
 
@@ -43,11 +43,12 @@ public class TournamentRestEndpointTest {
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        teamOne = TeamDto.builder()
+        TeamDto teamOne = TeamDto.builder()
                 .name("GoldenTwo")
                 .playerNicknames(Sets.newHashSet("qtek", "klimeck"))
                 .build();
-        teamTwo = TeamDto.builder()
+
+        TeamDto teamTwo = TeamDto.builder()
                 .name("GoldenFive")
                 .playerNicknames(Sets.newHashSet("Taz", "Pasha", "Byali", "Neo", "Snax"))
                 .build();
@@ -58,8 +59,14 @@ public class TournamentRestEndpointTest {
                 .teams(Sets.newHashSet(teamOne, teamTwo))
                 .build();
 
-        tournamentOne = TournamentDto.builder()
+        tournamentTwo = TournamentDto.builder()
                 .id(2L)
+                .name("PGL")
+                .teams(Sets.newHashSet(teamTwo, teamOne))
+                .build();
+
+        tournamentWithoutId = TournamentDto.builder()
+                .id(null)
                 .name("PGL")
                 .teams(Sets.newHashSet(teamTwo, teamOne))
                 .build();
@@ -124,5 +131,30 @@ public class TournamentRestEndpointTest {
                 .isEqualTo(tournamentOne);
     }
 
+    @Test
+    public void saveTournamentTest() {
+        Mockito
+                .when(tournamentService.saveTournament(tournamentWithoutId))
+                .thenReturn(tournamentTwo);
 
+        TournamentDto tournamentDto = sut.createOrUpdateTournament(tournamentWithoutId);
+
+        assertThat(tournamentDto)
+                .isNotNull()
+                .isEqualTo(tournamentTwo);
+    }
+
+    @Test
+    public void deleteTournamentTest() {
+        Long tournamentId = 1L;
+
+        Mockito
+                .when(tournamentService.deleteTournament(tournamentId))
+                .thenReturn(ResponseEntity.ok().build());
+
+        ResponseEntity entity = sut.deleteTournament(tournamentId);
+
+        assertThat(entity.getStatusCode())
+                .isEqualTo(ResponseEntity.ok().build().getStatusCode());
+    }
 }

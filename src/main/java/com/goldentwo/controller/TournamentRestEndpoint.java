@@ -40,7 +40,7 @@ public class TournamentRestEndpoint {
     }
 
     @PostMapping
-    public TournamentDto createTournament(@RequestBody TournamentDto tournamentDto) {
+    public TournamentDto createOrUpdateTournament(@RequestBody TournamentDto tournamentDto) {
         return tournamentService.saveTournament(tournamentDto);
     }
 
