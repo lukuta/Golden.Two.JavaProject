@@ -83,7 +83,7 @@ public class TournamentServiceImpl implements TournamentService {
             teams = new HashSet<>();
         }
 
-        return tournamentRepository.save(
+        return tournamentRepository.saveAndFlush(
                 Tournament.builder()
                         .id(tournamentDto.getId())
                 .name(tournamentDto.getName())
@@ -96,6 +96,6 @@ public class TournamentServiceImpl implements TournamentService {
     public ResponseEntity deleteTournament(Long id) {
         tournamentRepository.delete(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
