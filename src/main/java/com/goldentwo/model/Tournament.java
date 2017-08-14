@@ -29,6 +29,9 @@ public class Tournament {
     @OneToMany
     private Set<Team> teams = new HashSet<>();
 
+    @OneToMany
+    private Set<TournamentMatch> matches = new HashSet<>();
+
     public TournamentDto asDto() {
         Set<TeamDto> teamDtos = teams.stream()
                 .map(Team::asDto)
