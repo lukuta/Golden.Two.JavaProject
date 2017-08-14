@@ -14,8 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TeamDto {
-
-    @NotNull
+    
     private Long id;
     @NotNull
     private String name;
