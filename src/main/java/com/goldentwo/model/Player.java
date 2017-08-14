@@ -32,6 +32,7 @@ public class Player {
 
     public PlayerDto asDto() {
         return PlayerDto.builder()
+                .id(id)
                 .nickname(nickname)
                 .name(name)
                 .surname(surname)

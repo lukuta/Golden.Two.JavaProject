@@ -12,6 +12,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PlayerDto {
+
+    private Long id;
     @NotNull
     private String nickname;
     private String name;
