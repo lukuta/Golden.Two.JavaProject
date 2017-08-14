@@ -34,6 +34,7 @@ public class Team {
                 .collect(Collectors.toSet());
 
         return TeamDto.builder()
+                .id(id)
                 .name(name)
                 .playerNicknames(playerNicknames)
                 .build();
