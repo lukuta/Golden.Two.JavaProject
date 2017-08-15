@@ -40,8 +40,10 @@ public class TournamentServiceTest {
 
     private Team teamOne;
     private Team teamTwo;
+    private Team teamThree;
     private TeamDto teamOneDto;
     private TeamDto teamTwoDto;
+    private TeamDto teamThreeDto;
 
     private Tournament tournamentOne;
     private Tournament tournamentTwo;
@@ -78,10 +80,17 @@ public class TournamentServiceTest {
                 .build();
         teamTwoDto = teamTwo.asDto();
 
+        teamThree = Team.builder()
+                .id(3L)
+                .name("GoldenTwo2")
+                .players(Sets.newHashSet(playerOne, playerTwo))
+                .build();
+        teamThreeDto = teamOne.asDto();
+
         tournamentOne = Tournament.builder()
                 .id(1L)
                 .name("ELeague")
-                .teams(Sets.newHashSet(teamOne))
+                .teams(Sets.newHashSet(teamOne, teamThree))
                 .build();
 
         tournamentOneDto = tournamentOne.asDto();
@@ -97,7 +106,7 @@ public class TournamentServiceTest {
         tournamentWithoutId = Tournament.builder()
                 .id(null)
                 .name("ELeague")
-                .teams(Sets.newHashSet(teamOne))
+                .teams(Sets.newHashSet(teamOne, teamThree))
                 .build();
 
         tournamentWithoutIdDto = tournamentWithoutId.asDto();
