@@ -19,7 +19,7 @@ public class TournamentMatch {
     private Long id;
 
     @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "MATCH_ID")
     private Match match;
 
     @Column(nullable = false)

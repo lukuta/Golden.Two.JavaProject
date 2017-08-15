@@ -26,10 +26,10 @@ public class Tournament {
     @Column(unique = true, nullable = false)
     private String name;
 
-    @OneToMany
+    @ManyToMany
     private Set<Team> teams = new HashSet<>();
 
-    @OneToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<TournamentMatch> matches = new HashSet<>();
 
     public TournamentDto asDto() {

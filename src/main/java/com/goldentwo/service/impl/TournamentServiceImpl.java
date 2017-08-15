@@ -6,6 +6,7 @@ import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.Tournament;
+import com.goldentwo.model.TournamentMatch;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TournamentRepository;
 import com.goldentwo.service.TournamentService;
@@ -59,36 +60,45 @@ public class TournamentServiceImpl implements TournamentService {
 
         if (tournamentDto.getTeams().size() > 0) {
 
-                teams = tournamentDto.getTeams()
-                        .stream().map(teamDto -> {
-                            Set<Player> teamMates = new HashSet<>();
-                            teamDto.getPlayerNicknames().forEach(
-                                    nickname -> {
-                                        teamMates.add(
-                                                playerRepository
-                                                        .findByNickname(nickname)
-                                                        .orElseThrow(() -> new PlayerException("Player not found!"))
-                                        );
-                                    }
-                            );
+            teams = tournamentDto.getTeams()
+                    .stream().map(teamDto -> {
+                        Set<Player> teamMates = new HashSet<>();
+                        teamDto.getPlayerNicknames().forEach(
+                                nickname -> {
+                                    teamMates.add(
+                                            playerRepository
+                                                    .findByNickname(nickname)
+                                                    .orElseThrow(() -> new PlayerException("Player not found!"))
+                                    );
+                                }
+                        );
 
-                            return Team.builder()
-                                    .id(teamDto.getId())
-                                    .name(teamDto.getName())
-                                    .players(teamMates)
-                                    .build();
-                        }).collect(Collectors.toSet());
+                        return Team.builder()
+                                .id(teamDto.getId())
+                                .name(teamDto.getName())
+                                .players(teamMates)
+                                .build();
+                    }).collect(Collectors.toSet());
 
         } else {
             teams = new HashSet<>();
         }
 
+        Set<TournamentMatch> tournamentMatches = new HashSet<>();
+
+        if (teams.size() > 1 && (teams.size() & (teams.size() - 1)) == 0) {
+
+        } else {
+            throw new TournamentException("Teams size isn't power of 2");
+        }
+
         return tournamentRepository.saveAndFlush(
                 Tournament.builder()
                         .id(tournamentDto.getId())
-                .name(tournamentDto.getName())
-                .teams(teams)
-                .build()
+                        .name(tournamentDto.getName())
+                        .teams(teams)
+//                        .matches(tournamentMatches)
+                        .build()
         ).asDto();
     }
 

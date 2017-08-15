@@ -11,4 +11,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MatchDto {
     private Long id;
+    private TeamDto teamOne;
+    private TeamDto teamTwo;
+    private int scoreTeamOne;
+    private int scoreTeamTwo;
+    private boolean ended;
 }
