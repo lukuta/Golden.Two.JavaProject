@@ -1,6 +1,8 @@
 package com.goldentwo.controller.match;
 
 import com.goldentwo.dto.MatchDto;
+import com.goldentwo.dto.TeamDto;
+import org.assertj.core.util.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -13,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +28,27 @@ public class MatchRestEndpointJsonMapperTest {
 
     @Test
     public void testSerialize() throws IOException {
-        MatchDto match = MatchDto.builder().id(10L).build();
+        TeamDto teamOne = TeamDto.builder()
+                .id(1L)
+                .name("Virtus.Pro")
+                .playerNicknames(Sets.newHashSet(Arrays.asList("Neo", "Taz")))
+                .build();
+
+        TeamDto teamTwo = TeamDto.builder()
+                .id(2L)
+                .name("Fnatic")
+                .playerNicknames(Sets.newHashSet(Arrays.asList("JW", "Flusha")))
+                .build();
+
+
+        MatchDto match = MatchDto.builder()
+                .id(10L)
+                .ended(false)
+                .teamOne(teamOne)
+                .teamTwo(teamTwo)
+                .scoreTeamOne(13)
+                .scoreTeamTwo(2)
+                .build();
 
         File expectedMatch = new ClassPathResource("expected-match.json").getFile();
         JsonContent<MatchDto> converted = this.matchJacksonTester.write(match);

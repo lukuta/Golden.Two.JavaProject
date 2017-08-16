@@ -1,3 +1,20 @@
 {
-  "id": 10
+  "id": 10,
+  "ended": false,
+  "teamOne": {
+    "id": 1,
+    "name": "Virtus.Pro",
+    "playerNicknames": [
+      "Neo", "Taz"
+    ]
+  },
+  "teamTwo": {
+    "id": 2,
+    "name": "Fnatic",
+    "playerNicknames": [
+      "Flusha", "JW"
+    ]
+  },
+  "scoreTeamOne": 13,
+  "scoreTeamTwo": 2
 }
