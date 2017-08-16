@@ -1,4 +1,4 @@
-package com.goldentwo.config;
+package com.goldentwo.config.basic;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -10,13 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+//@EnableWebSecurity
+public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final MyUserDetailsService userDetailsService;
 
     @Autowired
-    public SecurityConfig(MyUserDetailsService userDetailsService) {
+    public BasicSecurityConfig(MyUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
@@ -25,6 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/api/v1/**").permitAll()
+                .antMatchers("/api/v1/users/me").authenticated()
                 .anyRequest().authenticated()
                 .and().httpBasic()
                 .and().headers().frameOptions().disable()
@@ -33,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) {
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider());
     }
 

@@ -1,4 +1,4 @@
-package com.goldentwo.config;
+package com.goldentwo.config.basic;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class MyUserDetailsService implements UserDetailsService {
+    
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         //TODO implement
