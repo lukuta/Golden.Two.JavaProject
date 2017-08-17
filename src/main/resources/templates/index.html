@@ -9,46 +9,48 @@
 
 <body ng-app="app" ng-controller="home as home">
 <div class="container">
-    <div class="container">
-        <div class="container" ng-show="!home.authenticated">
-            <div>
-                With Facebook: <a href="login/facebook">click here</a>
-            </div>
-            <div>
-                With Github: <a href="login/github">click here</a>
-            </div>
-        </div>
-        <div class="container" ng-show="home.authenticated">
-            Logged in as: <span ng-bind="home.user"></span>
+    <div class="container" ng-show="!home.authenticated">
+        <div>
+            With Facebook: <a href="login/facebook">click here</a>
         </div>
         <div>
-            <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
+            With Github: <a href="login/github">click here</a>
         </div>
     </div>
+    <div class="container" ng-show="home.authenticated">
+        Logged in as: <span ng-bind="home.user"></span>
+        <br/>
+        Login: <span ng-bind="home.login"></span>
+    </div>
+    <div>
+        <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
+    </div>
+</div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
-    <script type="text/javascript">
-        angular.module("app", []).controller("home", function ($http, $location) {
-            var self = this;
-            $http.get("/api/v1/users/me").success(function (data) {
-                self.user = data.userAuthentication.details.name;
-                self.authenticated = true;
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
+<script type="text/javascript">
+    angular.module("app", []).controller("home", function ($http, $location) {
+        var self = this;
+        $http.get("/api/v1/users/me").success(function (data) {
+            self.user = data.userAuthentication.details.name;
+            self.login = data.userAuthentication.details.login ? data.userAuthentication.details.login : "N/A";
+            self.authenticated = true;
+        }).error(function () {
+            self.user = "N/A";
+            self.login = "N/A";
+            self.authenticated = false;
+        });
+
+        self.logout = function () {
+            $http.post('/api/v1/logout', {}).success(function () {
+                self.authenticated = false;
+                $location.path("/");
             }).error(function () {
-                self.user = "N/A";
+                console.log("Logout failed");
                 self.authenticated = false;
             });
-
-            self.logout = function () {
-                $http.post('/api/v1/logout', {}).success(function () {
-                    self.authenticated = false;
-                    $location.path("/");
-                }).error(function () {
-                    console.log("Logout failed");
-                    self.authenticated = false;
-                });
-            };
-        });
-    </script>
-</div>
+        };
+    });
+</script>
 </body>
 </html>
