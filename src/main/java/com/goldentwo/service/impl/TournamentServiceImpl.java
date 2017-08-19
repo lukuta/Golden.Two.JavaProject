@@ -1,14 +1,14 @@
 package com.goldentwo.service.impl;
 
+import com.goldentwo.dto.MatchDto;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.PlayerException;
 import com.goldentwo.exception.TournamentException;
-import com.goldentwo.model.Player;
-import com.goldentwo.model.Team;
-import com.goldentwo.model.Tournament;
-import com.goldentwo.model.TournamentMatch;
+import com.goldentwo.model.*;
 import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TournamentMatchRepository;
 import com.goldentwo.repository.TournamentRepository;
+import com.goldentwo.service.MatchService;
 import com.goldentwo.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,14 +23,20 @@ import java.util.stream.Collectors;
 @Service
 public class TournamentServiceImpl implements TournamentService {
 
+    private MatchService matchService;
+
     private TournamentRepository tournamentRepository;
 
     private PlayerRepository playerRepository;
 
+    private TournamentMatchRepository tournamentMatchRepository;
+
     @Autowired
-    TournamentServiceImpl(TournamentRepository tournamentRepository, PlayerRepository playerRepository) {
+    TournamentServiceImpl(TournamentRepository tournamentRepository, PlayerRepository playerRepository, TournamentMatchRepository tournamentMatchRepository, MatchService matchService) {
         this.tournamentRepository = tournamentRepository;
         this.playerRepository = playerRepository;
+        this.tournamentMatchRepository = tournamentMatchRepository;
+        this.matchService = matchService;
     }
 
     @Override
@@ -87,9 +93,9 @@ public class TournamentServiceImpl implements TournamentService {
         Set<TournamentMatch> tournamentMatches = new HashSet<>();
 
         if (teams.size() > 1 && (teams.size() & (teams.size() - 1)) == 0) {
-
+            createTournamentMatch(tournamentMatches, 1, null, teams.size());
         } else {
-            throw new TournamentException("Teams size isn't power of 2");
+            throw new TournamentException("Teams size isn't power of 2 or less than 2");
         }
 
         return tournamentRepository.saveAndFlush(
@@ -97,9 +103,26 @@ public class TournamentServiceImpl implements TournamentService {
                         .id(tournamentDto.getId())
                         .name(tournamentDto.getName())
                         .teams(teams)
-//                        .matches(tournamentMatches)
+                        .matches(tournamentMatches)
                         .build()
         ).asDto();
+    }
+
+    private void createTournamentMatch(Set<TournamentMatch> tournamentMatches, double round, Long nextRoundId, int teamSize) {
+
+        TournamentMatch tournamentMatch = tournamentMatchRepository.save(TournamentMatch
+                .builder()
+                .nextRoundId(nextRoundId)
+                .round(round)
+                .build());
+
+        tournamentMatches.add(tournamentMatch);
+
+        if (teamSize/2 * round != 1) {
+            createTournamentMatch(tournamentMatches, round / 2, tournamentMatch.getId(), teamSize);
+            createTournamentMatch(tournamentMatches, round / 2, tournamentMatch.getId(), teamSize);
+        }
+
     }
 
     @Override

@@ -18,8 +18,7 @@ public class TournamentMatch {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false, cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "MATCH_ID")
+    @OneToOne(fetch = FetchType.LAZY)
     private Match match;
 
     @Column(nullable = false)
