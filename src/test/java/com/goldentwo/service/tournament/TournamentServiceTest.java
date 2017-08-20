@@ -6,7 +6,9 @@ import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.Tournament;
+import com.goldentwo.model.TournamentMatch;
 import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TournamentMatchRepository;
 import com.goldentwo.repository.TournamentRepository;
 import com.goldentwo.service.impl.TournamentServiceImpl;
 import com.google.common.collect.Sets;
@@ -35,6 +37,9 @@ public class TournamentServiceTest {
     @Mock
     private PlayerRepository playerRepository;
 
+    @Mock
+    private TournamentMatchRepository tournamentMatchRepository;
+
     @InjectMocks
     private TournamentServiceImpl sut;
 
@@ -44,6 +49,8 @@ public class TournamentServiceTest {
     private TeamDto teamOneDto;
     private TeamDto teamTwoDto;
     private TeamDto teamThreeDto;
+
+    private TournamentMatch tournamentMatchOne;
 
     private Tournament tournamentOne;
     private Tournament tournamentTwo;
@@ -87,10 +94,18 @@ public class TournamentServiceTest {
                 .build();
         teamThreeDto = teamOne.asDto();
 
+        tournamentMatchOne = TournamentMatch.builder()
+                .id(1L)
+                .match(null)
+                .nextRoundId(null)
+                .round(1)
+                .build();
+
         tournamentOne = Tournament.builder()
                 .id(1L)
                 .name("ELeague")
                 .teams(Sets.newHashSet(teamOne, teamThree))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentOneDto = tournamentOne.asDto();
@@ -99,6 +114,7 @@ public class TournamentServiceTest {
                 .id(2L)
                 .name("PGL")
                 .teams(Sets.newHashSet(teamTwo, teamOne))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentTwoDto = tournamentTwo.asDto();
@@ -107,6 +123,7 @@ public class TournamentServiceTest {
                 .id(null)
                 .name("ELeague")
                 .teams(Sets.newHashSet(teamOne, teamThree))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentWithoutIdDto = tournamentWithoutId.asDto();
@@ -192,6 +209,10 @@ public class TournamentServiceTest {
         Mockito
                 .when(playerRepository.findByNickname(playerTwo.getNickname()))
                 .thenReturn(Optional.ofNullable(playerTwo));
+
+        Mockito
+                .when(tournamentMatchRepository.save(tournamentMatchOne))
+                .thenReturn(tournamentMatchOne);
 
         TournamentDto savedTournamentFromSut = sut.saveTournament(tournamentWithoutIdDto);
 
