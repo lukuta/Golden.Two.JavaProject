@@ -2,6 +2,7 @@ package com.goldentwo.model;
 
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.dto.TournamentMatchDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,8 +38,15 @@ public class Tournament {
                 .map(Team::asDto)
                 .collect(Collectors.toSet());
 
+        Set<TournamentMatchDto> tournamentMatchDtos = matches.stream()
+                .map(TournamentMatch::asDto)
+                .collect(Collectors.toSet());
+
         return TournamentDto.builder()
-                .id(id).name(name).teams(teamDtos).build();
+                .id(id).name(name)
+                .teams(teamDtos)
+                .tournamentMatches(tournamentMatchDtos)
+                .build();
     }
 
 }

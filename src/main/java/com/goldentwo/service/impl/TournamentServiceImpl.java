@@ -95,7 +95,7 @@ public class TournamentServiceImpl implements TournamentService {
         if (teams.size() > 1 && (teams.size() & (teams.size() - 1)) == 0) {
             createTournamentMatch(tournamentMatches, 1, null, teams.size());
         } else {
-            throw new TournamentException("Teams size isn't power of 2 or less than 2");
+            throw new TournamentException(teams.size() > 1 ? "Teams size isn't power of 2!" : "Teams size is less than 2");
         }
 
         return tournamentRepository.saveAndFlush(

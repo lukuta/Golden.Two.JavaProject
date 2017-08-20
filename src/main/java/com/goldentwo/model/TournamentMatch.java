@@ -1,5 +1,6 @@
 package com.goldentwo.model;
 
+import com.goldentwo.dto.TournamentMatchDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +26,12 @@ public class TournamentMatch {
     private double round;
 
     private Long nextRoundId;
+
+    public TournamentMatchDto asDto() {
+        return TournamentMatchDto.builder()
+                .id(id).match(match != null ? match.asDto() : null)
+                .round(round).nextRoundId(nextRoundId)
+                .build();
+    }
 
 }
