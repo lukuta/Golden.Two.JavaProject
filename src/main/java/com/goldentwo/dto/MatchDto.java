@@ -1,5 +1,6 @@
 package com.goldentwo.dto;
 
+import com.goldentwo.model.Match;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,4 +17,9 @@ public class MatchDto {
     private int scoreTeamOne;
     private int scoreTeamTwo;
     private boolean ended;
+
+    public Match asEntity() {
+        return Match.builder().id(id).teamOne(teamOne.asEntity()).teamTwo(teamTwo.asEntity())
+                .scoreTeamOne(scoreTeamOne).scoreTeamTwo(scoreTeamTwo).ended(ended).build();
+    }
 }

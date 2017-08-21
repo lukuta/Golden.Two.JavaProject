@@ -41,6 +41,11 @@ public class Match {
     public MatchDto asDto() {
         return MatchDto.builder()
                 .id(id)
+                .teamTwo(teamTwo.asDto())
+                .teamOne(teamOne.asDto())
+                .scoreTeamTwo(scoreTeamTwo)
+                .scoreTeamOne(scoreTeamOne)
+                .ended(ended)
                 .build();
     }
 

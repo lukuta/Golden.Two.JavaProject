@@ -7,6 +7,7 @@ import com.goldentwo.model.Player;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.service.PlayerService;
 import com.goldentwo.service.TeamService;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -60,12 +61,9 @@ public class PlayerServiceImpl implements PlayerService {
 
         PlayerDto savedPlayer = playerRepository.saveAndFlush(player).asDto();
 
-        Set<String> nicknameList = new HashSet<>();
-        nicknameList.add(savedPlayer.getNickname());
-
         teamService.saveTeam(TeamDto.builder()
                 .name(savedPlayer.getNickname())
-                .playerNicknames(nicknameList)
+                .players(Sets.newHashSet(savedPlayer))
                 .build());
 
         return savedPlayer;

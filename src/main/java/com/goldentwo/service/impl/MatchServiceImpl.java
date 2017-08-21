@@ -39,8 +39,8 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
-    public MatchDto saveMatch(MatchDto matchdto) {
-        Match match = new Match(matchdto);
+    public MatchDto saveMatch(MatchDto matchDto) {
+        Match match = matchDto.asEntity();
 
         return matchRepository.saveAndFlush(match).asDto();
     }

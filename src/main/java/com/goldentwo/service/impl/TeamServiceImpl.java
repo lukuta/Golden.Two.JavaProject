@@ -21,13 +21,10 @@ import java.util.stream.Collectors;
 @Service
 public class TeamServiceImpl implements TeamService {
     private final TeamRepository teamRepository;
-    private final PlayerRepository playerRepository;
-
 
     @Autowired
-    public TeamServiceImpl(TeamRepository teamRepository, PlayerRepository playerRepository) {
+    public TeamServiceImpl(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
-        this.playerRepository = playerRepository;
     }
 
     @Override
@@ -55,20 +52,18 @@ public class TeamServiceImpl implements TeamService {
 
     @Override
     public TeamDto saveTeam(TeamDto teamDto) {
-        Set<Player> teamMates = new HashSet<>();
-        teamDto.getPlayerNicknames().forEach(
-                nickname -> {
-                    teamMates.add(
-                            playerRepository
-                                    .findByNickname(nickname)
-                                    .orElseThrow(() -> new PlayerException("Player not found!"))
-                    );
-                }
-        );
+        Set<Player> players = teamDto.getPlayers().stream()
+                .map((playerDto -> Player.builder()
+                            .id(playerDto.getId())
+                            .name(playerDto.getName())
+                            .surname(playerDto.getSurname())
+                            .nickname(playerDto.getNickname())
+                            .build()))
+                .collect(Collectors.toSet());
 
         Team team = Team.builder()
                 .name(teamDto.getName())
-                .players(teamMates)
+                .players(players)
                 .build();
 
         return teamRepository.saveAndFlush(team).asDto();
