@@ -31,13 +31,11 @@ public class MatchRestEndpointJsonMapperTest {
         TeamDto teamOne = TeamDto.builder()
                 .id(1L)
                 .name("Virtus.Pro")
-                .playerNicknames(Sets.newHashSet(Arrays.asList("Neo", "Taz")))
                 .build();
 
         TeamDto teamTwo = TeamDto.builder()
                 .id(2L)
                 .name("Fnatic")
-                .playerNicknames(Sets.newHashSet(Arrays.asList("JW", "Flusha")))
                 .build();
 
 

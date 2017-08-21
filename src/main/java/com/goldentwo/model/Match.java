@@ -41,8 +41,8 @@ public class Match {
     public MatchDto asDto() {
         return MatchDto.builder()
                 .id(id)
-                .teamTwo(teamTwo.asDto())
-                .teamOne(teamOne.asDto())
+                .teamTwo(teamTwo != null ? teamTwo.asDto() : null)
+                .teamOne(teamOne != null ? teamOne.asDto() : null)
                 .scoreTeamTwo(scoreTeamTwo)
                 .scoreTeamOne(scoreTeamOne)
                 .ended(ended)
