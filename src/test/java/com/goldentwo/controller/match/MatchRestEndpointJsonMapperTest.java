@@ -1,8 +1,9 @@
 package com.goldentwo.controller.match;
 
 import com.goldentwo.dto.MatchDto;
+import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
-import org.assertj.core.util.Sets;
+import com.google.common.collect.Sets;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -15,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,14 +28,45 @@ public class MatchRestEndpointJsonMapperTest {
 
     @Test
     public void testSerialize() throws IOException {
+
+        PlayerDto playerOne = PlayerDto.builder()
+                .id(1L)
+                .nickname("Taz")
+                .name("Wiktor")
+                .surname("Wojtas")
+                .build();
+
+        PlayerDto playerTwo = PlayerDto.builder()
+                .id(2L)
+                .nickname("Neo")
+                .name("Filip")
+                .surname("Kubski")
+                .build();
+
+        PlayerDto playerThree = PlayerDto.builder()
+                .id(3L)
+                .nickname("olofmeister")
+                .name("Olof")
+                .surname("Kyaber")
+                .build();
+
+        PlayerDto playerFour = PlayerDto.builder()
+                .id(4L)
+                .nickname("JW")
+                .name("Jaspher")
+                .surname("Wild")
+                .build();
+
         TeamDto teamOne = TeamDto.builder()
                 .id(1L)
                 .name("Virtus.Pro")
+                .players(Sets.newHashSet(playerOne, playerTwo))
                 .build();
 
         TeamDto teamTwo = TeamDto.builder()
                 .id(2L)
                 .name("Fnatic")
+                .players(Sets.newHashSet(playerThree, playerFour))
                 .build();
 
 
