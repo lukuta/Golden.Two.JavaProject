@@ -1,6 +1,7 @@
 package com.goldentwo.controller.tournament;
 
 import com.goldentwo.controller.TournamentRestEndpoint;
+import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.TournamentException;
@@ -43,14 +44,41 @@ public class TournamentRestEndpointTest {
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        TeamDto teamOne = TeamDto.builder()
-                .name("GoldenTwo")
-                .playerNicknames(Sets.newHashSet("qtek", "klimeck"))
+        PlayerDto playerOne = PlayerDto.builder()
+                .id(1L)
+                .nickname("Taz")
+                .name("Wiktor")
+                .surname("Wojtas")
                 .build();
 
+        PlayerDto playerTwo = PlayerDto.builder()
+                .id(2L)
+                .nickname("Neo")
+                .name("Filip")
+                .surname("Kubski")
+                .build();
+
+        PlayerDto playerThree = PlayerDto.builder()
+                .id(3L)
+                .nickname("olofmeister")
+                .name("Olof")
+                .surname("Kyaber")
+                .build();
+
+        PlayerDto playerFour = PlayerDto.builder()
+                .id(4L)
+                .nickname("JW")
+                .name("Jaspher")
+                .surname("Wild")
+                .build();
+
+        TeamDto teamOne = TeamDto.builder()
+                .name("GoldenTwo")
+                .players(Sets.newHashSet(playerOne, playerTwo))
+                .build();
         TeamDto teamTwo = TeamDto.builder()
                 .name("GoldenFive")
-                .playerNicknames(Sets.newHashSet("Taz", "Pasha", "Byali", "Neo", "Snax"))
+                .players(Sets.newHashSet(playerThree, playerFour))
                 .build();
 
         tournamentOne = TournamentDto.builder()

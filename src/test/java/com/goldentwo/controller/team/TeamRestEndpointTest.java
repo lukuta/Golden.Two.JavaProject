@@ -2,7 +2,9 @@ package com.goldentwo.controller.team;
 
 
 import com.goldentwo.controller.TeamRestEndpoint;
+import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
+import com.goldentwo.model.Player;
 import com.goldentwo.service.TeamService;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -26,6 +28,10 @@ public class TeamRestEndpointTest {
     @InjectMocks
     private TeamRestEndpoint sut;
 
+    private PlayerDto playerOne;
+    private PlayerDto playerTwo;
+    private PlayerDto playerThree;
+    private PlayerDto playerFour;
     private TeamDto teamOne;
     private TeamDto teamTwo;
 
@@ -33,13 +39,41 @@ public class TeamRestEndpointTest {
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
+        playerOne = PlayerDto.builder()
+                .id(1L)
+                .nickname("Taz")
+                .name("Wiktor")
+                .surname("Wojtas")
+                .build();
+
+        playerTwo = PlayerDto.builder()
+                .id(2L)
+                .nickname("Neo")
+                .name("Filip")
+                .surname("Kubski")
+                .build();
+
+        playerThree = PlayerDto.builder()
+                .id(3L)
+                .nickname("olofmeister")
+                .name("Olof")
+                .surname("Kyaber")
+                .build();
+
+        playerFour = PlayerDto.builder()
+                .id(4L)
+                .nickname("JW")
+                .name("Jaspher")
+                .surname("Wild")
+                .build();
+
         teamOne = TeamDto.builder()
                 .name("GoldenTwo")
-                .playerNicknames(Sets.newHashSet("qtek", "klimeck"))
+                .players(Sets.newHashSet(playerOne, playerTwo))
                 .build();
         teamTwo = TeamDto.builder()
                 .name("GoldenFive")
-                .playerNicknames(Sets.newHashSet("Taz", "Pasha", "Byali", "Neo", "Snax"))
+                .players(Sets.newHashSet(playerThree, playerFour))
                 .build();
     }
 
