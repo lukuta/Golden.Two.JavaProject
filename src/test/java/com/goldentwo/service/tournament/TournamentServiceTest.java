@@ -212,7 +212,7 @@ public class TournamentServiceTest {
                 .thenReturn(tournamentMatchOne.asDto().getMatch());
 
         Mockito
-                .when(tournamentMatchRepository.save(tournamentMatchOne))
+                .when(tournamentMatchRepository.save((TournamentMatch) any()))
                 .thenReturn(tournamentMatchOne);
 
         TournamentDto savedTournamentFromSut = sut.saveTournament(tournamentWithoutIdDto);
