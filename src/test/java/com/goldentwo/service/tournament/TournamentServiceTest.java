@@ -3,13 +3,11 @@ package com.goldentwo.service.tournament;
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.TournamentException;
-import com.goldentwo.model.Player;
-import com.goldentwo.model.Team;
-import com.goldentwo.model.Tournament;
-import com.goldentwo.model.TournamentMatch;
+import com.goldentwo.model.*;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TournamentMatchRepository;
 import com.goldentwo.repository.TournamentRepository;
+import com.goldentwo.service.MatchService;
 import com.goldentwo.service.impl.TournamentServiceImpl;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -39,6 +37,9 @@ public class TournamentServiceTest {
 
     @Mock
     private TournamentMatchRepository tournamentMatchRepository;
+
+    @Mock
+    private MatchService matchService;
 
     @InjectMocks
     private TournamentServiceImpl sut;
@@ -96,7 +97,9 @@ public class TournamentServiceTest {
 
         tournamentMatchOne = TournamentMatch.builder()
                 .id(1L)
-                .match(null)
+                .match(Match.builder()
+                        .id(1L).ended(false).scoreTeamOne(1).scoreTeamTwo(2)
+                        .teamOne(teamOne).teamTwo(teamTwo).build())
                 .nextRoundId(null)
                 .round(1)
                 .build();
@@ -203,12 +206,10 @@ public class TournamentServiceTest {
         Mockito
                 .when(tournamentRepository.saveAndFlush(any()))
                 .thenReturn(tournamentOne);
+
         Mockito
-                .when(playerRepository.findByNickname(playerOne.getNickname()))
-                .thenReturn(Optional.ofNullable(playerOne));
-        Mockito
-                .when(playerRepository.findByNickname(playerTwo.getNickname()))
-                .thenReturn(Optional.ofNullable(playerTwo));
+                .when(matchService.saveMatch(any()))
+                .thenReturn(tournamentMatchOne.asDto().getMatch());
 
         Mockito
                 .when(tournamentMatchRepository.save(tournamentMatchOne))
