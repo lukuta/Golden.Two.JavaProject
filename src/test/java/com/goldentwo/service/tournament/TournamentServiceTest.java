@@ -3,11 +3,11 @@ package com.goldentwo.service.tournament;
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.TournamentException;
-import com.goldentwo.model.Player;
-import com.goldentwo.model.Team;
-import com.goldentwo.model.Tournament;
+import com.goldentwo.model.*;
 import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TournamentMatchRepository;
 import com.goldentwo.repository.TournamentRepository;
+import com.goldentwo.service.MatchService;
 import com.goldentwo.service.impl.TournamentServiceImpl;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -35,13 +35,23 @@ public class TournamentServiceTest {
     @Mock
     private PlayerRepository playerRepository;
 
+    @Mock
+    private TournamentMatchRepository tournamentMatchRepository;
+
+    @Mock
+    private MatchService matchService;
+
     @InjectMocks
     private TournamentServiceImpl sut;
 
     private Team teamOne;
     private Team teamTwo;
+    private Team teamThree;
     private TeamDto teamOneDto;
     private TeamDto teamTwoDto;
+    private TeamDto teamThreeDto;
+
+    private TournamentMatch tournamentMatchOne;
 
     private Tournament tournamentOne;
     private Tournament tournamentTwo;
@@ -78,10 +88,27 @@ public class TournamentServiceTest {
                 .build();
         teamTwoDto = teamTwo.asDto();
 
+        teamThree = Team.builder()
+                .id(3L)
+                .name("GoldenTwo2")
+                .players(Sets.newHashSet(playerOne, playerTwo))
+                .build();
+        teamThreeDto = teamOne.asDto();
+
+        tournamentMatchOne = TournamentMatch.builder()
+                .id(1L)
+                .match(Match.builder()
+                        .id(1L).ended(false).scoreTeamOne(1).scoreTeamTwo(2)
+                        .teamOne(teamOne).teamTwo(teamTwo).build())
+                .nextRoundId(null)
+                .round(1)
+                .build();
+
         tournamentOne = Tournament.builder()
                 .id(1L)
                 .name("ELeague")
-                .teams(Sets.newHashSet(teamOne))
+                .teams(Sets.newHashSet(teamOne, teamThree))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentOneDto = tournamentOne.asDto();
@@ -90,6 +117,7 @@ public class TournamentServiceTest {
                 .id(2L)
                 .name("PGL")
                 .teams(Sets.newHashSet(teamTwo, teamOne))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentTwoDto = tournamentTwo.asDto();
@@ -97,7 +125,8 @@ public class TournamentServiceTest {
         tournamentWithoutId = Tournament.builder()
                 .id(null)
                 .name("ELeague")
-                .teams(Sets.newHashSet(teamOne))
+                .teams(Sets.newHashSet(teamOne, teamThree))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentWithoutIdDto = tournamentWithoutId.asDto();
@@ -177,12 +206,14 @@ public class TournamentServiceTest {
         Mockito
                 .when(tournamentRepository.saveAndFlush(any()))
                 .thenReturn(tournamentOne);
+
         Mockito
-                .when(playerRepository.findByNickname(playerOne.getNickname()))
-                .thenReturn(Optional.ofNullable(playerOne));
+                .when(matchService.saveMatch(any()))
+                .thenReturn(tournamentMatchOne.asDto().getMatch());
+
         Mockito
-                .when(playerRepository.findByNickname(playerTwo.getNickname()))
-                .thenReturn(Optional.ofNullable(playerTwo));
+                .when(tournamentMatchRepository.save((TournamentMatch) any()))
+                .thenReturn(tournamentMatchOne);
 
         TournamentDto savedTournamentFromSut = sut.saveTournament(tournamentWithoutIdDto);
 

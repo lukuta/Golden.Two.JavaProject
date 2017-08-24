@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -22,13 +20,32 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public Match(MatchDto matchdto) {
-        this.id = matchdto.getId();
+    @ManyToOne
+    private Team teamOne;
+    @ManyToOne
+    private Team teamTwo;
+
+    @ColumnDefault(value = "0")
+    private int scoreTeamOne;
+
+    @ColumnDefault(value = "0")
+    private int scoreTeamTwo;
+
+    @ColumnDefault(value = "false")
+    private boolean ended;
+
+    public Match(MatchDto matchDto) {
+        this.id = matchDto.getId();
     }
 
     public MatchDto asDto() {
         return MatchDto.builder()
                 .id(id)
+                .teamTwo(teamTwo != null ? teamTwo.asDto() : null)
+                .teamOne(teamOne != null ? teamOne.asDto() : null)
+                .scoreTeamTwo(scoreTeamTwo)
+                .scoreTeamOne(scoreTeamOne)
+                .ended(ended)
                 .build();
     }
 

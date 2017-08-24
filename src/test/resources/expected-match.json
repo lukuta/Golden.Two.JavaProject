@@ -1,3 +1,42 @@
 {
-  "id": 10
+  "id": 10,
+  "ended": false,
+  "teamOne": {
+    "id": 1,
+    "name": "Virtus.Pro",
+    "players": [
+      {
+        "id": 1,
+        "nickname": "Taz",
+        "name": "Wiktor",
+        "surname": "Wojtas"
+      },
+      {
+        "id": 2,
+        "nickname": "Neo",
+        "name": "Filip",
+        "surname": "Kubski"
+      }
+    ]
+  },
+  "teamTwo": {
+    "id": 2,
+    "name": "Fnatic",
+    "players": [
+      {
+        "id": 3,
+        "nickname": "olofmeister",
+        "name": "Olof",
+        "surname": "Kyaber"
+      },
+      {
+        "id": 4,
+        "nickname": "JW",
+        "name": "Jaspher",
+        "surname": "Wild"
+      }
+    ]
+  },
+  "scoreTeamOne": 13,
+  "scoreTeamTwo": 2
 }
