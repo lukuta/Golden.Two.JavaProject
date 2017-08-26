@@ -1,6 +1,7 @@
 package com.goldentwo.service.league;
 
 import com.goldentwo.dto.LeagueDto;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.League;
 import com.goldentwo.repository.LeagueRepository;
 import com.goldentwo.service.impl.LeagueServiceImpl;
@@ -15,6 +16,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -86,5 +88,42 @@ public class LeagueServiceTest {
         assertThat(leagueFromSut)
                 .isNotNull()
                 .isEqualTo(leagueOneDto);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void findLeagueByIdWhenNotExist() {
+        Long leagueId = 1L;
+
+        Mockito
+                .when(leagueRepository.findOne(leagueId))
+                .thenReturn(null);
+
+        sut.findLeagueById(leagueId);
+    }
+
+    @Test
+    public void findLeagueByNameWhenExist() {
+        String leagueName = "ESL";
+
+        Mockito
+                .when(leagueRepository.findByName(leagueName))
+                .thenReturn(Optional.ofNullable(leagueOne));
+
+        LeagueDto leagueFromSut = sut.findLeagueByName(leagueName);
+
+        assertThat(leagueFromSut)
+                .isNotNull()
+                .isEqualTo(leagueOneDto);
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void findLeagueByNameWhenNotExist() {
+        String leagueName = "ELeague";
+
+        Mockito
+                .when(leagueRepository.findByName(leagueName))
+                .thenReturn(Optional.empty());
+
+        sut.findLeagueByName(leagueName);
     }
 }
