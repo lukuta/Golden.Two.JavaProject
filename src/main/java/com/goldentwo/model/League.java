@@ -2,6 +2,7 @@ package com.goldentwo.model;
 
 import com.goldentwo.dto.LeagueDto;
 import com.goldentwo.dto.RoundDto;
+import com.goldentwo.dto.TeamDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,14 +28,18 @@ public class League {
     private String name;
     @ColumnDefault(value = "1")
     private int actualRound;
-
     @OneToMany
     private Set<Round> rounds;
+    @ManyToMany
+    private Set<Team> teams;
 
     public LeagueDto asDto() {
         Set<RoundDto> roundDtos = rounds.stream().map(Round::asDto).collect(Collectors.toSet());
+        Set<TeamDto> teamDtos = teams.stream().map(Team::asDto).collect(Collectors.toSet());
 
-        return LeagueDto.builder().id(id).name(name).actualRound(actualRound).rounds(roundDtos).build();
+        return LeagueDto.builder().id(id).name(name)
+                .actualRound(actualRound).rounds(roundDtos)
+                .teams(teamDtos).build();
     }
 
 }
