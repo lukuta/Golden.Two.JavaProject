@@ -2,6 +2,7 @@ package com.goldentwo.service.tournament;
 
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.*;
 import com.goldentwo.repository.PlayerRepository;
@@ -147,7 +148,7 @@ public class TournamentServiceTest {
                 .isEqualTo(tournamentOneDto);
     }
 
-    @Test(expected = TournamentException.class)
+    @Test(expected = NotFoundException.class)
     public void findTournamentByIdWhenNotExist() {
         Long tournamentId = 4L;
 
@@ -173,7 +174,7 @@ public class TournamentServiceTest {
                 .isEqualTo(tournamentOneDto);
     }
 
-    @Test(expected = TournamentException.class)
+    @Test(expected = NotFoundException.class)
     public void findTournamentByNameWhenNotExist() {
         String tournamentName = "ESL One";
 

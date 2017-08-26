@@ -48,14 +48,4 @@ public class TournamentRestEndpoint {
     public ResponseEntity deleteTournament(@PathVariable Long id) {
         return tournamentService.deleteTournament(id);
     }
-
-    @ExceptionHandler(TournamentException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(TournamentException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("message", ex.getMessage());
-        response.put("code", HttpStatus.NOT_FOUND.toString());
-
-        return response;
-    }
 }

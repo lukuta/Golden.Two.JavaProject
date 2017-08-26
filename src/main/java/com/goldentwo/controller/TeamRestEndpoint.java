@@ -48,12 +48,4 @@ public class TeamRestEndpoint {
         return teamService.deleteTeam(id);
     }
 
-    @ExceptionHandler(TeamException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(TeamException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("Message", ex.getMessage());
-
-        return response;
-    }
 }
