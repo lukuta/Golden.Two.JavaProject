@@ -45,13 +45,4 @@ public class MatchRestEndpoint {
     public ResponseEntity deleteMatch(@PathVariable Long id) {
         return matchService.deleteMatch(id);
     }
-
-    @ExceptionHandler(MatchException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(MatchException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("Message: ", ex.getMessage());
-
-        return response;
-    }
 }

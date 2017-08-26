@@ -1,18 +1,15 @@
 package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.TeamDto;
-import com.goldentwo.exception.PlayerException;
-import com.goldentwo.exception.TeamException;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
-import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -31,7 +28,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamDto findTeamById(Long id) {
         return Optional.ofNullable(teamRepository.findOne(id))
                 .orElseThrow(
-                        () -> new TeamException("Team doesn't exists!"))
+                        () -> new NotFoundException("Team doesn't exists!"))
                 .asDto();
     }
 
@@ -39,7 +36,7 @@ public class TeamServiceImpl implements TeamService {
     public TeamDto findTeamByName(String name) {
         return teamRepository.findByName(name)
                 .orElseThrow(
-                        () -> new TeamException("Team not found!"))
+                        () -> new NotFoundException("Team not found!"))
                 .asDto();
     }
 
