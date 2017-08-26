@@ -1,7 +1,7 @@
 package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.MatchDto;
-import com.goldentwo.exception.MatchException;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Match;
 import com.goldentwo.repository.MatchRepository;
 import com.goldentwo.service.MatchService;
@@ -27,7 +27,7 @@ public class MatchServiceImpl implements MatchService {
     public MatchDto findMatchById(Long id) {
         return Optional.ofNullable(matchRepository.findOne(id))
                 .orElseThrow(
-                        () -> new MatchException("Match doesn't exists!"))
+                        () -> new NotFoundException("Match doesn't exists!"))
                 .asDto();
     }
 

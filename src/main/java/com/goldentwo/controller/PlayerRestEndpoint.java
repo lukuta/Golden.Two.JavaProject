@@ -51,12 +51,4 @@ public class PlayerRestEndpoint {
         return playerService.deletePlayer(id);
     }
 
-    @ExceptionHandler(PlayerException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(PlayerException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("Message: ", ex.getMessage());
-
-        return response;
-    }
 }

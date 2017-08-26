@@ -2,6 +2,8 @@ package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.MatchDto;
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.exception.BadRequestException;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.exception.PlayerException;
 import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.*;
@@ -39,14 +41,14 @@ public class TournamentServiceImpl implements TournamentService {
     @Override
     public TournamentDto findTournamentById(Long id) {
         return Optional.ofNullable(tournamentRepository.findOne(id))
-                .orElseThrow(() -> new TournamentException("Tournament " + id + " doesn't exist!"))
+                .orElseThrow(() -> new NotFoundException("Tournament " + id + " doesn't exist!"))
                 .asDto();
     }
 
     @Override
     public TournamentDto findTournamentByName(String name) {
         return tournamentRepository.findByName(name)
-                .orElseThrow(() -> new TournamentException("Tournament " + name + " doesn't exist!"))
+                .orElseThrow(() -> new NotFoundException("Tournament " + name + " doesn't exist!"))
                 .asDto();
     }
 
@@ -123,7 +125,7 @@ public class TournamentServiceImpl implements TournamentService {
             }
 
         } else {
-            throw new TournamentException(teams.size() > 1 ? "Teams size isn't power of 2!" : "Teams size is less than 2");
+            throw new BadRequestException(teams.size() > 1 ? "Teams size isn't power of 2!" : "Teams size is less than 2");
         }
 
         return tournamentRepository.saveAndFlush(
