@@ -28,7 +28,7 @@ public class League {
     private String name;
     @ColumnDefault(value = "0")
     private int actualRound;
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "league", cascade = CascadeType.PERSIST)
     private Set<Round> rounds;
     @ManyToMany
     private Set<Team> teams;

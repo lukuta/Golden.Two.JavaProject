@@ -1,5 +1,6 @@
 package com.goldentwo.service.league;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.goldentwo.dto.LeagueDto;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.League;
@@ -17,6 +18,8 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
@@ -67,45 +70,45 @@ public class LeagueServiceTest {
                 .build();
 
         Match matchOne = Match.builder()
-                .id(1L).scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamOne).teamTwo(teamFour)
+                .scoreTeamOne(0).scoreTeamTwo(0)
+                .teamOne(teamFour).teamTwo(teamOne)
                 .ended(false).build();
 
         Match matchTwo = Match.builder()
-                .id(2L).scoreTeamOne(0).scoreTeamTwo(0)
+                .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamTwo).teamTwo(teamThree)
                 .ended(false).build();
 
         Match matchThree = Match.builder()
-                .id(3L).scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamFour).teamTwo(teamTwo)
-                .ended(false).build();
-
-        Match matchFour = Match.builder()
-                .id(4L).scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamThree).teamTwo(teamOne)
-                .ended(false).build();
-
-        Match matchFive = Match.builder()
-                .id(5L).scoreTeamOne(0).scoreTeamTwo(0)
+                .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamThree).teamTwo(teamFour)
                 .ended(false).build();
 
-        Match matchSix = Match.builder()
-                .id(6L).scoreTeamOne(0).scoreTeamTwo(0)
+        Match matchFour = Match.builder()
+                .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamOne).teamTwo(teamTwo)
                 .ended(false).build();
 
+        Match matchFive = Match.builder()
+                .scoreTeamOne(0).scoreTeamTwo(0)
+                .teamOne(teamFour).teamTwo(teamTwo)
+                .ended(false).build();
+
+        Match matchSix = Match.builder()
+                .scoreTeamOne(0).scoreTeamTwo(0)
+                .teamOne(teamThree).teamTwo(teamOne)
+                .ended(false).build();
+
         Round roundOne = Round.builder()
-                .id(1L).no(1)
+                .no(1)
                 .matches(Sets.newHashSet(matchOne, matchTwo)).build();
 
         Round roundTwo = Round.builder()
-                .id(2L).no(2)
+                .no(2)
                 .matches(Sets.newHashSet(matchThree, matchFour)).build();
 
         Round roundThree = Round.builder()
-                .id(3L).no(3)
+                .no(3)
                 .matches(Sets.newHashSet(matchFive, matchSix)).build();
 
         leagueOne = League.builder().id(1L)
@@ -209,12 +212,10 @@ public class LeagueServiceTest {
     }
 
     @Test
-    public void createNewLeagueTest() {
+    public void createNewLeagueTest() throws IOException {
         Mockito
                 .when(leagueRepository.save(leagueFour))
                 .thenReturn(leagueTwo);
-
-        System.out.println(leagueFour);
 
         LeagueDto leagueFromSut = sut.saveLeague(leagueThreeDto);
 
