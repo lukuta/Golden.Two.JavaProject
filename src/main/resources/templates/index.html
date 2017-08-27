@@ -31,7 +31,7 @@
 <script type="text/javascript">
     angular.module("app", []).controller("home", function ($http, $location) {
         var self = this;
-        $http.get("/api/v1/users/me").success(function (data) {
+        $http.get("/api/v1/me").success(function (data) {
             self.user = data.userAuthentication.details.name;
             self.login = data.userAuthentication.details.login ? data.userAuthentication.details.login : "N/A";
             self.authenticated = true;
