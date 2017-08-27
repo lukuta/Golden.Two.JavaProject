@@ -26,7 +26,7 @@ public class League {
     private Long id;
     @Column(nullable = false)
     private String name;
-    @ColumnDefault(value = "1")
+    @ColumnDefault(value = "0")
     private int actualRound;
     @OneToMany
     private Set<Round> rounds;

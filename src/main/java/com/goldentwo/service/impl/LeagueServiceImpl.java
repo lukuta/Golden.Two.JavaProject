@@ -1,15 +1,19 @@
 package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.LeagueDto;
+import com.goldentwo.dto.TeamDto;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.League;
+import com.goldentwo.model.Match;
+import com.goldentwo.model.Round;
+import com.goldentwo.model.Team;
 import com.goldentwo.repository.LeagueRepository;
 import com.goldentwo.service.LeagueService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,6 +21,7 @@ public class LeagueServiceImpl implements LeagueService {
 
     private LeagueRepository leagueRepository;
 
+    @Autowired
     LeagueServiceImpl(LeagueRepository leagueRepository) {
         this.leagueRepository = leagueRepository;
     }
@@ -42,7 +47,56 @@ public class LeagueServiceImpl implements LeagueService {
 
     @Override
     public LeagueDto saveLeague(LeagueDto leagueDto) {
-        return leagueRepository.save(leagueDto.asEntity()).asDto();
+        leagueDto.setRounds(new HashSet<>());
+
+        Set<Round> rounds = new HashSet<>();
+        List<Team> teamList = leagueDto.getTeams().stream()
+                .map(TeamDto::asEntity)
+                .sorted(Comparator.comparingLong(Team::getId))
+                .collect(Collectors.toList());
+
+        Deque<Team> teams = new LinkedList<>();
+
+        teams.addAll(teamList);
+
+        Team lastTeam = teams.removeLast();
+
+        for (int i = 0; i < leagueDto.getTeams().size()-1; i++) {
+            Round round = Round.builder().no(i+1).matches(new HashSet<>()).build();
+            List<Team> teams1 = new ArrayList<>();
+            teams1.addAll(teams);
+
+            for (int j = 0; j < leagueDto.getTeams().size()/2; j++) {
+                Match match = new Match();
+
+                if (j == 0) {
+                    if (i % 2 == 0) {
+                        match.setTeamOne(lastTeam);
+                        match.setTeamTwo(teams.getFirst());
+                    } else {
+                        match.setTeamOne(teams.getFirst());
+                        match.setTeamTwo(lastTeam);
+                    }
+                } else {
+                    match.setTeamOne(teams1.get(j));
+                    match.setTeamTwo(teams1.get(teams1.size()-1));
+                }
+
+                System.out.print(match.getTeamOne().getId());
+                System.out.print(match.getTeamTwo().getId());
+                System.out.println();
+                round.getMatches().add(match);
+            }
+            teams.addFirst(teams.removeLast());
+            rounds.add(round);
+        }
+
+        League league = leagueDto.asEntity();
+        league.setRounds(rounds);
+
+
+
+        return leagueRepository.save(league).asDto();
     }
 
     @Override
