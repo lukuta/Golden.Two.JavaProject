@@ -8,7 +8,9 @@ import com.goldentwo.model.Match;
 import com.goldentwo.model.Round;
 import com.goldentwo.model.Team;
 import com.goldentwo.repository.LeagueRepository;
+import com.goldentwo.repository.RoundRepository;
 import com.goldentwo.service.LeagueService;
+import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,15 @@ public class LeagueServiceImpl implements LeagueService {
 
     private LeagueRepository leagueRepository;
 
+    private MatchService matchService;
+
+    private RoundRepository roundRepository;
+
     @Autowired
-    LeagueServiceImpl(LeagueRepository leagueRepository) {
+    LeagueServiceImpl(LeagueRepository leagueRepository, MatchService matchService, RoundRepository roundRepository) {
         this.leagueRepository = leagueRepository;
+        this.matchService = matchService;
+        this.roundRepository = roundRepository;
     }
 
     @Override
@@ -47,6 +55,7 @@ public class LeagueServiceImpl implements LeagueService {
 
     @Override
     public LeagueDto saveLeague(LeagueDto leagueDto) {
+        leagueDto.setId(null);
         leagueDto.setRounds(new HashSet<>());
 
         Set<Round> rounds = new HashSet<>();
@@ -82,10 +91,11 @@ public class LeagueServiceImpl implements LeagueService {
                     match.setTeamTwo(teams1.get(teams1.size()-1));
                 }
 
-                round.getMatches().add(match);
+                round.getMatches().add(matchService.saveMatch(match.asDto()).asEntity());
+
             }
             teams.addFirst(teams.removeLast());
-            rounds.add(round);
+            rounds.add(roundRepository.save(round));
         }
 
 

@@ -23,7 +23,7 @@ public class Round {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private int no;
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "round", cascade = CascadeType.PERSIST)
+    @OneToMany
     private Set<Match> matches;
 
     public RoundDto asDto() {
