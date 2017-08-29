@@ -91,6 +91,7 @@ public class LeagueServiceImpl implements LeagueService {
                     match.setTeamTwo(teams1.get(teams1.size()-1));
                 }
 
+                System.out.println(match.asDto());
                 round.getMatches().add(matchService.saveMatch(match.asDto()).asEntity());
 
             }
