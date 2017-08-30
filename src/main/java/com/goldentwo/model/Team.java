@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -28,6 +29,8 @@ public class Team {
     @NotEmpty
     @OneToMany
     private Set<Player> players;
+    @ColumnDefault(value = "0")
+    private int rank;
 
     public TeamDto asDto() {
         Set<PlayerDto> playerDtos = players.stream()
@@ -38,6 +41,7 @@ public class Team {
                 .id(id)
                 .name(name)
                 .players(playerDtos)
+                .rank(rank)
                 .build();
     }
 }

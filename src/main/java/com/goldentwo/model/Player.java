@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -24,6 +25,10 @@ public class Player {
     private String name;
     private String surname;
 
+    @Column(unique = true)
+    @ColumnDefault(value = "0")
+    private int rank;
+
     public Player(PlayerDto playerDto) {
         this.nickname = playerDto.getNickname();
         this.name = playerDto.getName();
@@ -36,6 +41,7 @@ public class Player {
                 .nickname(nickname)
                 .name(name)
                 .surname(surname)
+                .rank(rank)
                 .build();
     }
 

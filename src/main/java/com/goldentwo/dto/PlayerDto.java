@@ -1,10 +1,7 @@
 package com.goldentwo.dto;
 
 import com.goldentwo.model.Player;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
@@ -19,8 +16,9 @@ public class PlayerDto {
     private String nickname;
     private String name;
     private String surname;
+    private int rank;
 
     public Player asEntity() {
-        return Player.builder().id(id).nickname(nickname).name(name).surname(surname).build();
+        return Player.builder().id(id).nickname(nickname).name(name).surname(surname).rank(rank).build();
     }
 }
