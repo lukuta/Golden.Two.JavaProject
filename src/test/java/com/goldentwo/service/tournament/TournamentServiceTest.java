@@ -1,14 +1,12 @@
 package com.goldentwo.service.tournament;
 
-import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
 import com.goldentwo.exception.NotFoundException;
-import com.goldentwo.exception.TournamentException;
 import com.goldentwo.model.*;
-import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TournamentMatchRepository;
 import com.goldentwo.repository.TournamentRepository;
 import com.goldentwo.service.MatchService;
+import com.goldentwo.service.MatchesGeneratorService;
 import com.goldentwo.service.impl.TournamentServiceImpl;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -20,9 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -35,6 +31,9 @@ public class TournamentServiceTest {
 
     @Mock
     private TournamentMatchRepository tournamentMatchRepository;
+
+    @Mock
+    private MatchesGeneratorService matchesGeneratorService;
 
     @Mock
     private MatchService matchService;
@@ -187,6 +186,8 @@ public class TournamentServiceTest {
 
     @Test
     public void saveTournamentTest() {
+        Set<TournamentMatch> matches = tournamentOne.getMatches();
+
         Mockito
                 .when(tournamentRepository.saveAndFlush(any()))
                 .thenReturn(tournamentOne);
@@ -199,7 +200,12 @@ public class TournamentServiceTest {
                 .when(tournamentMatchRepository.save((TournamentMatch) any()))
                 .thenReturn(tournamentMatchOne);
 
-        TournamentDto savedTournamentFromSut = sut.saveTournament(tournamentWithoutIdDto);
+        Mockito
+                .when(matchesGeneratorService.generateTournamentMatches(any(), any()))
+                .thenReturn(matches);
+
+        TournamentDto savedTournamentFromSut =
+                sut.saveTournament(tournamentWithoutIdDto, MatchesGeneratorService.MatchGeneratorType.RANDOM);
 
         assertThat(savedTournamentFromSut)
                 .isNotNull()

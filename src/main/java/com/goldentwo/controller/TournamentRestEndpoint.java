@@ -1,17 +1,13 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.dto.TournamentDto;
-import com.goldentwo.exception.TournamentException;
-import com.goldentwo.model.Tournament;
+import com.goldentwo.service.MatchesGeneratorService;
 import com.goldentwo.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/tournaments")
@@ -39,9 +35,15 @@ public class TournamentRestEndpoint {
         return tournamentService.findTournamentByName(name);
     }
 
+    //TODO need to add @InitBinder method for parsing enum param
     @PostMapping
-    public TournamentDto createOrUpdateTournament(@RequestBody TournamentDto tournamentDto) {
-        return tournamentService.saveTournament(tournamentDto);
+    public TournamentDto createOrUpdateTournament(@RequestBody TournamentDto tournamentDto,
+                                                  @RequestParam(name = "type", required = false) MatchesGeneratorService.MatchGeneratorType type) {
+        if (type == null) {
+            type = MatchesGeneratorService.MatchGeneratorType.RANDOM;
+        }
+
+        return tournamentService.saveTournament(tournamentDto, type);
     }
 
     @DeleteMapping(value = "/{id}")

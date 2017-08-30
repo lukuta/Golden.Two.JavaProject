@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.goldentwo.service.MatchesGeneratorService.MatchGeneratorType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -160,12 +161,12 @@ public class TournamentRestEndpointTest {
     }
 
     @Test
-    public void saveTournamentTest() {
+    public void simpleSaveTournamentTest() {
         Mockito
-                .when(tournamentService.saveTournament(tournamentWithoutId))
+                .when(tournamentService.saveTournament(tournamentWithoutId, MatchGeneratorType.RANDOM))
                 .thenReturn(tournamentTwo);
 
-        TournamentDto tournamentDto = sut.createOrUpdateTournament(tournamentWithoutId);
+        TournamentDto tournamentDto = sut.createOrUpdateTournament(tournamentWithoutId, MatchGeneratorType.RANDOM);
 
         assertThat(tournamentDto)
                 .isNotNull()
