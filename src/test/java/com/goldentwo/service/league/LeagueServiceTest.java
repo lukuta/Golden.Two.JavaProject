@@ -163,27 +163,27 @@ public class LeagueServiceTest {
 
         roundOne = Round.builder()
                 .no(1)
-                .matches(Sets.newHashSet(matchOne.asEntity(), matchTwo.asEntity())).build();
+                .matches(Sets.newHashSet(savedMatchOne.asEntity(), savedMatchTwo.asEntity())).build();
 
         savedRoundOne = Round.builder()
                 .no(1).id(1L)
-                .matches(Sets.newHashSet(matchOne.asEntity(), matchTwo.asEntity())).build();
+                .matches(Sets.newHashSet(savedMatchOne.asEntity(), savedMatchTwo.asEntity())).build();
 
         roundTwo = Round.builder()
                 .no(2)
-                .matches(Sets.newHashSet(matchThree.asEntity(), matchFour.asEntity())).build();
+                .matches(Sets.newHashSet(savedMatchThree.asEntity(), savedMatchFour.asEntity())).build();
 
         savedRoundTwo = Round.builder()
                 .no(2).id(2L)
-                .matches(Sets.newHashSet(matchThree.asEntity(), matchFour.asEntity())).build();
+                .matches(Sets.newHashSet(savedMatchThree.asEntity(), savedMatchFour.asEntity())).build();
 
         roundThree = Round.builder()
                 .no(3)
-                .matches(Sets.newHashSet(matchFive.asEntity(), matchSix.asEntity())).build();
+                .matches(Sets.newHashSet(savedMatchFive.asEntity(), savedMatchSix.asEntity())).build();
 
         savedRoundThree = Round.builder()
                 .no(3).id(3L)
-                .matches(Sets.newHashSet(matchFive.asEntity(), matchSix.asEntity())).build();
+                .matches(Sets.newHashSet(savedMatchFive.asEntity(), savedMatchSix.asEntity())).build();
 
         leagueOne = League.builder().id(1L)
                 .name("ESL")
@@ -215,7 +215,7 @@ public class LeagueServiceTest {
         leagueFour = League.builder()
                 .name("FaceIt")
                 .actualRound(0)
-                .rounds(Sets.newHashSet(roundOne, roundTwo, roundThree))
+                .rounds(Sets.newHashSet(savedRoundOne, savedRoundTwo, savedRoundThree))
                 .teams(Sets.newHashSet(teamOne, teamTwo, teamThree, teamFour))
                 .build();
         leagueFourDto = leagueFour.asDto();
@@ -293,7 +293,6 @@ public class LeagueServiceTest {
         Mockito
                 .when(matchService.saveMatch(matchOne))
                 .thenReturn(savedMatchOne);
-        System.out.println(matchOne);
 
         Mockito
                 .when(matchService.saveMatch(matchTwo))

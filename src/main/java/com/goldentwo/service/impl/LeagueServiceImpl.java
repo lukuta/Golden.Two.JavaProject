@@ -91,7 +91,6 @@ public class LeagueServiceImpl implements LeagueService {
                     match.setTeamTwo(teams1.get(teams1.size()-1));
                 }
 
-                System.out.println(match.asDto());
                 round.getMatches().add(matchService.saveMatch(match.asDto()).asEntity());
 
             }
@@ -102,9 +101,6 @@ public class LeagueServiceImpl implements LeagueService {
 
         League league = leagueDto.asEntity();
         league.setRounds(rounds);
-
-        System.out.println(league);
-
 
         return leagueRepository.save(league).asDto();
     }
