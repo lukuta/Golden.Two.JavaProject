@@ -25,8 +25,6 @@ public class TeamDto {
     private String name;
     @NotEmpty
     private Set<PlayerDto> players;
-    @Column(unique = true)
-    @ColumnDefault(value = "0")
     private int rank;
 
     public Team asEntity() {

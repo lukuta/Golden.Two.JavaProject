@@ -25,7 +25,6 @@ public class Player {
     private String name;
     private String surname;
 
-    @Column(unique = true)
     @ColumnDefault(value = "0")
     private int rank;
 

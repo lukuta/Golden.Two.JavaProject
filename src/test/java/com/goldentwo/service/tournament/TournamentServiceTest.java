@@ -34,9 +34,6 @@ public class TournamentServiceTest {
     private TournamentRepository tournamentRepository;
 
     @Mock
-    private PlayerRepository playerRepository;
-
-    @Mock
     private TournamentMatchRepository tournamentMatchRepository;
 
     @Mock
@@ -45,56 +42,42 @@ public class TournamentServiceTest {
     @InjectMocks
     private TournamentServiceImpl sut;
 
-    private Team teamOne;
-    private Team teamTwo;
-    private Team teamThree;
-    private TeamDto teamOneDto;
-    private TeamDto teamTwoDto;
-    private TeamDto teamThreeDto;
-
     private TournamentMatch tournamentMatchOne;
 
     private Tournament tournamentOne;
     private Tournament tournamentTwo;
-    private Tournament tournamentWithoutId;
     private TournamentDto tournamentOneDto;
     private TournamentDto tournamentTwoDto;
     private TournamentDto tournamentWithoutIdDto;
-
-    private Player playerOne;
-    private Player playerTwo;
 
     @Before
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        playerOne = Player.builder().id(1L).nickname("Taz").build();
-        playerTwo = Player.builder().id(2L).nickname("Pasha").build();
+        Player playerOne = Player.builder().id(1L).nickname("Taz").build();
+        Player playerTwo = Player.builder().id(2L).nickname("Pasha").build();
 
         Player playerThree = Player.builder().id(3L).nickname("Byali").build();
         Player playerFour = Player.builder().id(4L).nickname("Neo").build();
         Player playerFive = Player.builder().id(5L).nickname("Snax").build();
 
-        teamOne = Team.builder()
+        Team teamOne = Team.builder()
                 .id(1L)
                 .name("GoldenTwo")
                 .players(Sets.newHashSet(playerOne, playerTwo))
                 .build();
-        teamOneDto = teamOne.asDto();
 
-        teamTwo = Team.builder()
+        Team teamTwo = Team.builder()
                 .name("GoldenFive")
                 .id(2L)
                 .players(Sets.newHashSet(playerOne, playerTwo, playerThree, playerFour, playerFive))
                 .build();
-        teamTwoDto = teamTwo.asDto();
 
-        teamThree = Team.builder()
+        Team teamThree = Team.builder()
                 .id(3L)
                 .name("GoldenTwo2")
                 .players(Sets.newHashSet(playerOne, playerTwo))
                 .build();
-        teamThreeDto = teamOne.asDto();
 
         tournamentMatchOne = TournamentMatch.builder()
                 .id(1L)
@@ -123,7 +106,7 @@ public class TournamentServiceTest {
 
         tournamentTwoDto = tournamentTwo.asDto();
 
-        tournamentWithoutId = Tournament.builder()
+        Tournament tournamentWithoutId = Tournament.builder()
                 .id(null)
                 .name("ELeague")
                 .teams(Sets.newHashSet(teamOne, teamThree))

@@ -61,8 +61,65 @@ public class TournamentServiceImpl implements TournamentService {
 
     @Override
     public TournamentDto saveTournament(TournamentDto tournamentDto) {
-        Set<Team> teams;
+        Set<Team> teams = getTeams(tournamentDto);
+        Set<TournamentMatch> tournamentMatches = createTournamentMatches(teams);
 
+        return tournamentRepository.saveAndFlush(
+                Tournament.builder()
+                        .id(tournamentDto.getId())
+                        .name(tournamentDto.getName())
+                        .teams(teams)
+                        .matches(tournamentMatches)
+                        .build()
+        ).asDto();
+    }
+
+    private Set<TournamentMatch> createTournamentMatches(Set<Team> teams) {
+        Set<TournamentMatch> tournamentMatches = new HashSet<>();
+        if (teams.size() > 1 && (teams.size() & (teams.size() - 1)) == 0) {
+
+            List<Team> teamsToAssign = new ArrayList<>(teams);
+
+            Collections.shuffle(teamsToAssign);
+
+            List<Match> matches = new ArrayList<>();
+
+            for (int i = 0; i < teamsToAssign.size(); i += 2) {
+                MatchDto matchDto = matchService.saveMatch(MatchDto.builder()
+                        .teamOne(teamsToAssign.get(i).asDto())
+                        .teamTwo(teamsToAssign.get(i + 1).asDto())
+                        .build());
+
+                matches.add(
+                        Match.builder()
+                                .id(matchDto.getId())
+                                .teamOne(matchDto.getTeamOne().asEntity())
+                                .teamTwo(matchDto.getTeamTwo().asEntity())
+                                .scoreTeamOne(matchDto.getScoreTeamOne())
+                                .scoreTeamTwo(matchDto.getScoreTeamTwo())
+                                .ended(matchDto.isEnded())
+                                .build()
+                );
+            }
+
+            createTournamentMatch(tournamentMatches, 1, null, teams.size());
+            List<TournamentMatch> tournamentMatchesInFirstRound = tournamentMatches.stream()
+                    .filter(tournamentMatch -> tournamentMatch.getRound() * teams.size() / 2 == 1)
+                    .collect(Collectors.toList());
+
+            for (int i = 0; i < tournamentMatchesInFirstRound.size(); i++) {
+                tournamentMatchesInFirstRound.get(i).setMatch(matches.get(i));
+            }
+
+        } else {
+            throw new BadRequestException(teams.size() > 1 ? "Teams size isn't power of 2!" : "Teams size is less than 2");
+        }
+
+        return tournamentMatches;
+    }
+
+    private Set<Team> getTeams(TournamentDto tournamentDto) {
+        Set<Team> teams;
         if (tournamentDto.getTeams().size() > 0) {
 
             teams = tournamentDto.getTeams()
@@ -86,56 +143,7 @@ public class TournamentServiceImpl implements TournamentService {
         } else {
             teams = new HashSet<>();
         }
-
-        Set<TournamentMatch> tournamentMatches = new HashSet<>();
-
-        if (teams.size() > 1 && (teams.size() & (teams.size() - 1)) == 0) {
-            createTournamentMatch(tournamentMatches, 1, null, teams.size());
-
-            List<Team> teamsToAssign = new ArrayList<>(teams);
-
-            Collections.shuffle(teamsToAssign);
-
-            List<Match> matches = new ArrayList<>();
-
-            for (int i = 0; i < teamsToAssign.size(); i += 2) {
-                MatchDto matchDto = matchService.saveMatch(MatchDto.builder()
-                .teamOne(teamsToAssign.get(i).asDto())
-                .teamTwo(teamsToAssign.get(i+1).asDto())
-                .build());
-
-                matches.add(
-                        Match.builder()
-                        .id(matchDto.getId())
-                        .teamOne(matchDto.getTeamOne().asEntity())
-                        .teamTwo(matchDto.getTeamTwo().asEntity())
-                        .scoreTeamOne(matchDto.getScoreTeamOne())
-                        .scoreTeamTwo(matchDto.getScoreTeamTwo())
-                        .ended(matchDto.isEnded())
-                        .build()
-                );
-            }
-
-            List<TournamentMatch> tournamentMatchesInFirstRound = tournamentMatches.stream()
-                    .filter(tournamentMatch -> tournamentMatch.getRound() * teams.size()/2 == 1)
-                    .collect(Collectors.toList());
-
-            for (int i = 0; i < tournamentMatchesInFirstRound.size(); i++) {
-                tournamentMatchesInFirstRound.get(i).setMatch(matches.get(i));
-            }
-
-        } else {
-            throw new BadRequestException(teams.size() > 1 ? "Teams size isn't power of 2!" : "Teams size is less than 2");
-        }
-
-        return tournamentRepository.saveAndFlush(
-                Tournament.builder()
-                        .id(tournamentDto.getId())
-                        .name(tournamentDto.getName())
-                        .teams(teams)
-                        .matches(tournamentMatches)
-                        .build()
-        ).asDto();
+        return teams;
     }
 
     private void createTournamentMatch(Set<TournamentMatch> tournamentMatches, double round, Long nextRoundId, int teamSize) {
@@ -148,7 +156,7 @@ public class TournamentServiceImpl implements TournamentService {
 
         tournamentMatches.add(tournamentMatch);
 
-        if (teamSize/2 * round != 1) {
+        if (teamSize / 2 * round != 1) {
             createTournamentMatch(tournamentMatches, round / 2, tournamentMatch.getId(), teamSize);
             createTournamentMatch(tournamentMatches, round / 2, tournamentMatch.getId(), teamSize);
         }
