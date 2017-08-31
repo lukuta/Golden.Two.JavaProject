@@ -17,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
@@ -335,5 +336,13 @@ public class LeagueServiceTest {
         assertThat(leagueFromSut)
                 .isNotNull()
                 .isEqualTo(leagueTwoDto);
+    }
+
+    @Test
+    public void deleteLeague() {
+        ResponseEntity entity = sut.deleteLeague(1L);
+
+        assertThat(entity)
+                .isEqualTo(ResponseEntity.noContent().build());
     }
 }
