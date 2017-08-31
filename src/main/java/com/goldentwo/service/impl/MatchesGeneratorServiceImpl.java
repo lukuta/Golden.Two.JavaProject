@@ -56,7 +56,15 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
     }
 
     private void shuffleByCompetitorRank(List<Team> teamsToAssign) {
-        //TODO
+        teamsToAssign = teamsToAssign.stream()
+                .sorted(Comparator.comparing(Team::getRank))
+                .collect(Collectors.toList());
+
+        int halfOfTeamListSize = teamsToAssign.size() / 2;
+        for (int i = 1, j = halfOfTeamListSize; i < halfOfTeamListSize; i += 2, j += 2) {
+            Collections.swap(teamsToAssign, i, j);
+        }
+
     }
 
     private Set<TournamentMatch> createTournamentMatches(List<Team> teams) {

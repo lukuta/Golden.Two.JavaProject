@@ -188,6 +188,32 @@ public class TournamentServiceTest {
     public void saveTournamentTest() {
         Set<TournamentMatch> matches = tournamentOne.getMatches();
 
+        mockSaveTournamentComponents(matches);
+
+        TournamentDto savedTournamentFromSut =
+                sut.saveTournament(tournamentWithoutIdDto, MatchesGeneratorService.MatchGeneratorType.RANDOM);
+
+        assertThat(savedTournamentFromSut)
+                .isNotNull()
+                .isEqualTo(tournamentOneDto);
+    }
+
+    @Test
+    public void saveTournamentWithCompetitorRankGeneratorTest() {
+        //TODO properly mock components for test competitor rank generator
+        Set<TournamentMatch> matches = tournamentOne.getMatches();
+
+        mockSaveTournamentComponents(matches);
+
+        TournamentDto savedTournamentFromSut =
+                sut.saveTournament(tournamentWithoutIdDto, MatchesGeneratorService.MatchGeneratorType.COMPETITOR_RANK);
+
+        assertThat(savedTournamentFromSut)
+                .isNotNull()
+                .isEqualTo(tournamentOneDto);
+    }
+
+    private void mockSaveTournamentComponents(Set<TournamentMatch> matches) {
         Mockito
                 .when(tournamentRepository.saveAndFlush(any()))
                 .thenReturn(tournamentOne);
@@ -203,13 +229,6 @@ public class TournamentServiceTest {
         Mockito
                 .when(matchesGeneratorService.generateTournamentMatches(any(), any()))
                 .thenReturn(matches);
-
-        TournamentDto savedTournamentFromSut =
-                sut.saveTournament(tournamentWithoutIdDto, MatchesGeneratorService.MatchGeneratorType.RANDOM);
-
-        assertThat(savedTournamentFromSut)
-                .isNotNull()
-                .isEqualTo(tournamentOneDto);
     }
 
     @Test
