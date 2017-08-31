@@ -32,7 +32,7 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
 
     @Override
     public Set<TournamentMatch> generateTournamentMatches(Set<Team> teams, MatchGeneratorType type) {
-        if (teams.size() > 1 && (teams.size() & (teams.size() - 1)) != 0) {
+        if (teams.size() < 2 || (teams.size() & (teams.size() - 1)) != 0) {
             throw new BadRequestException(teams.size() > 1 ? "Teams size isn't power of 2!" : "Teams size is less than 2");
         }
 
