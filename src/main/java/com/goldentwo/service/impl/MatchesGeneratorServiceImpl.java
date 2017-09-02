@@ -43,7 +43,7 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
                 Collections.shuffle(teamsToAssign);
                 break;
             case COMPETITOR_RANK:
-                shuffleByCompetitorRank(teamsToAssign);
+                teamsToAssign = shuffleByCompetitorRank(teamsToAssign);
                 break;
             default:
                 LOG.warn("Cannot find case for generator type. Used default one - RANDOM");
@@ -55,16 +55,17 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
         return tournamentMatchSet;
     }
 
-    private void shuffleByCompetitorRank(List<Team> teamsToAssign) {
-        teamsToAssign = teamsToAssign.stream()
+    private List<Team> shuffleByCompetitorRank(List<Team> teamsToAssign) {
+        List<Team> teamList = teamsToAssign.stream()
                 .sorted(Comparator.comparing(Team::getRank))
                 .collect(Collectors.toList());
 
-        int halfOfTeamListSize = teamsToAssign.size() / 2;
-        for (int i = 1, j = halfOfTeamListSize; i < halfOfTeamListSize; i += 2, j += 2) {
-            Collections.swap(teamsToAssign, i, j);
+        int teamListHalfSize = teamsToAssign.size() / 2;
+        for (int i = 1, j = teamListHalfSize; i < teamListHalfSize; i += 2, j += 2) {
+            Collections.swap(teamList, i, j);
         }
 
+        return teamList;
     }
 
     private Set<TournamentMatch> createTournamentMatches(List<Team> teams) {

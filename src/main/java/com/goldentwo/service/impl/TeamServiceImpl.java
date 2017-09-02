@@ -51,16 +51,18 @@ public class TeamServiceImpl implements TeamService {
     public TeamDto saveTeam(TeamDto teamDto) {
         Set<Player> players = teamDto.getPlayers().stream()
                 .map((playerDto -> Player.builder()
-                            .id(playerDto.getId())
-                            .name(playerDto.getName())
-                            .surname(playerDto.getSurname())
-                            .nickname(playerDto.getNickname())
-                            .build()))
+                        .id(playerDto.getId())
+                        .name(playerDto.getName())
+                        .surname(playerDto.getSurname())
+                        .nickname(playerDto.getNickname())
+                        .rank(playerDto.getRank())
+                        .build()))
                 .collect(Collectors.toSet());
 
         Team team = Team.builder()
                 .name(teamDto.getName())
                 .players(players)
+                .rank(teamDto.getRank())
                 .build();
 
         return teamRepository.saveAndFlush(team).asDto();

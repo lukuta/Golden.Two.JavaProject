@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
@@ -27,9 +26,8 @@ public class Team {
     @Column(unique = true, nullable = false)
     private String name;
     @NotEmpty
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Player> players;
-    @ColumnDefault(value = "0")
     private int rank;
 
     public TeamDto asDto() {

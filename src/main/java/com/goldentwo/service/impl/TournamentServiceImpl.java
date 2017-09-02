@@ -71,16 +71,17 @@ public class TournamentServiceImpl implements TournamentService {
 
     private Set<Team> getTeams(TournamentDto tournamentDto) {
         Set<Team> teams;
-        if (tournamentDto.getTeams().size() > 0) {
+        if (tournamentDto.getTeams().isEmpty()) {
 
-            teams = tournamentDto.getTeams()
-                    .stream().map(teamDto -> {
+            teams = tournamentDto.getTeams().stream()
+                    .map(teamDto -> {
                         Set<Player> players = teamDto.getPlayers().stream()
                                 .map((playerDto -> Player.builder()
                                         .id(playerDto.getId())
                                         .name(playerDto.getName())
                                         .surname(playerDto.getSurname())
                                         .nickname(playerDto.getNickname())
+                                        .rank(playerDto.getRank())
                                         .build()))
                                 .collect(Collectors.toSet());
 
@@ -88,6 +89,7 @@ public class TournamentServiceImpl implements TournamentService {
                                 .id(teamDto.getId())
                                 .name(teamDto.getName())
                                 .players(players)
+                                .rank(teamDto.getRank())
                                 .build();
                     }).collect(Collectors.toSet());
 
