@@ -70,7 +70,7 @@ public class MatchRestEndpointTest {
     @Test
     public void saveMatchTest() {
         Mockito
-                .when(matchService.saveMatch(matchOne))
+                .when(matchService.createMatch(matchOne))
                 .thenReturn(matchOne);
 
         MatchDto savedMatchFromSut = sut.saveMatch(matchOne);

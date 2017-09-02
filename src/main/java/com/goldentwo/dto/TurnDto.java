@@ -7,11 +7,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
 import java.util.Map;
+import java.util.Set;
 
 @Data
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,11 +18,12 @@ public class TurnDto {
 
     private Long id;
     private int no;
-    private Map<Long, Long> kills;
+    private Map<String, Integer> kills;
+    private Set<String> deaths;
     private Long winner;
     private TurnWinType winType;
 
     public Turn asEntity() {
-        return Turn.builder().id(id).no(no).kills(kills).winner(winner).winType(winType).build();
+        return Turn.builder().id(id).no(no).kills(kills).deaths(deaths).winner(winner).winType(winType).build();
     }
 }
