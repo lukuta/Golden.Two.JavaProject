@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -24,6 +25,8 @@ public class Match {
     private Team teamOne;
     @ManyToOne
     private Team teamTwo;
+    @OneToMany
+    private Set<Turn> turns;
 
     @ColumnDefault(value = "0")
     private int scoreTeamOne;
