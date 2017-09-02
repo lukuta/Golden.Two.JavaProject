@@ -81,7 +81,7 @@ public class TournamentServiceImpl implements TournamentService {
                                         .name(playerDto.getName())
                                         .surname(playerDto.getSurname())
                                         .nickname(playerDto.getNickname())
-                                        .rank(playerDto.getRank())
+                                        .rankPoints(playerDto.getRankPoints())
                                         .build()))
                                 .collect(Collectors.toSet());
 
@@ -89,7 +89,7 @@ public class TournamentServiceImpl implements TournamentService {
                                 .id(teamDto.getId())
                                 .name(teamDto.getName())
                                 .players(players)
-                                .rank(teamDto.getRank())
+                                .rankPoints(teamDto.getRankPoints())
                                 .build();
                     }).collect(Collectors.toSet());
 

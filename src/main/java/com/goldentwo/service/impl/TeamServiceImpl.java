@@ -55,14 +55,14 @@ public class TeamServiceImpl implements TeamService {
                         .name(playerDto.getName())
                         .surname(playerDto.getSurname())
                         .nickname(playerDto.getNickname())
-                        .rank(playerDto.getRank())
+                        .rankPoints(playerDto.getRankPoints())
                         .build()))
                 .collect(Collectors.toSet());
 
         Team team = Team.builder()
                 .name(teamDto.getName())
                 .players(players)
-                .rank(teamDto.getRank())
+                .rankPoints(teamDto.getRankPoints())
                 .build();
 
         return teamRepository.saveAndFlush(team).asDto();

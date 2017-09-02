@@ -6,10 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -25,13 +23,13 @@ public class TeamDto {
     private String name;
     @NotEmpty
     private Set<PlayerDto> players;
-    private int rank;
+    private int rankPoints;
 
     public Team asEntity() {
         Set<Player> playerSet = players.stream()
                 .map(PlayerDto::asEntity)
                 .collect(Collectors.toSet());
 
-        return Team.builder().id(id).name(name).players(playerSet).rank(rank).build();
+        return Team.builder().id(id).name(name).players(playerSet).rankPoints(rankPoints).build();
     }
 }

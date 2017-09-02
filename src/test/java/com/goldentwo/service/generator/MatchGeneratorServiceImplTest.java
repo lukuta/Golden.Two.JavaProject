@@ -44,29 +44,29 @@ public class MatchGeneratorServiceImplTest {
         MockitoAnnotations.initMocks(this);
 
         teams = new Team[]{
-                Team.builder().id(1L).name("A").rank(1).players(
-                        Sets.newHashSet(Player.builder().nickname("AA").rank(1).build())
+                Team.builder().id(1L).name("A").rankPoints(10).players(
+                        Sets.newHashSet(Player.builder().nickname("AA").rankPoints(10).build())
                 ).build(),
-                Team.builder().id(2L).name("B").rank(2).players(
-                        Sets.newHashSet(Player.builder().nickname("BB").rank(3).build())
+                Team.builder().id(2L).name("B").rankPoints(9).players(
+                        Sets.newHashSet(Player.builder().nickname("BB").rankPoints(9).build())
                 ).build(),
-                Team.builder().id(3L).name("C").rank(3).players(
-                        Sets.newHashSet(Player.builder().nickname("CC").rank(3).build())
+                Team.builder().id(3L).name("C").rankPoints(8).players(
+                        Sets.newHashSet(Player.builder().nickname("CC").rankPoints(8).build())
                 ).build(),
-                Team.builder().id(4L).name("D").rank(4).players(
-                        Sets.newHashSet(Player.builder().nickname("DD").rank(4).build())
+                Team.builder().id(4L).name("D").rankPoints(7).players(
+                        Sets.newHashSet(Player.builder().nickname("DD").rankPoints(7).build())
                 ).build(),
-                Team.builder().id(5L).name("E").rank(5).players(
-                        Sets.newHashSet(Player.builder().nickname("EE").rank(5).build())
+                Team.builder().id(5L).name("E").rankPoints(6).players(
+                        Sets.newHashSet(Player.builder().nickname("EE").rankPoints(6).build())
                 ).build(),
-                Team.builder().id(6L).name("F").rank(6).players(
-                        Sets.newHashSet(Player.builder().nickname("FF").rank(6).build())
+                Team.builder().id(6L).name("F").rankPoints(5).players(
+                        Sets.newHashSet(Player.builder().nickname("FF").rankPoints(5).build())
                 ).build(),
-                Team.builder().id(7L).name("G").rank(7).players(
-                        Sets.newHashSet(Player.builder().nickname("GG").rank(7).build())
+                Team.builder().id(7L).name("G").rankPoints(4).players(
+                        Sets.newHashSet(Player.builder().nickname("GG").rankPoints(4).build())
                 ).build(),
-                Team.builder().id(8L).name("H").rank(8).players(
-                        Sets.newHashSet(Player.builder().nickname("HH").rank(8).build())
+                Team.builder().id(8L).name("H").rankPoints(3).players(
+                        Sets.newHashSet(Player.builder().nickname("HH").rankPoints(3).build())
                 ).build(),
         };
         teamSet = Sets.newHashSet(

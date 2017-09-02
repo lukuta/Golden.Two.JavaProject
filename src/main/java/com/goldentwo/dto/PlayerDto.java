@@ -16,9 +16,15 @@ public class PlayerDto {
     private String nickname;
     private String name;
     private String surname;
-    private int rank;
+    private int rankPoints;
 
     public Player asEntity() {
-        return Player.builder().id(id).nickname(nickname).name(name).surname(surname).rank(rank).build();
+        return Player.builder()
+                .id(id)
+                .nickname(nickname)
+                .name(name)
+                .surname(surname)
+                .rankPoints(rankPoints)
+                .build();
     }
 }
