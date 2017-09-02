@@ -28,7 +28,7 @@ public class Team {
     @NotEmpty
     @OneToMany(fetch = FetchType.EAGER)
     private Set<Player> players;
-    private int rank;
+    private int rankPoints;
 
     public TeamDto asDto() {
         Set<PlayerDto> playerDtos = players.stream()
@@ -39,7 +39,7 @@ public class Team {
                 .id(id)
                 .name(name)
                 .players(playerDtos)
-                .rank(rank)
+                .rankPoints(rankPoints)
                 .build();
     }
 }

@@ -81,14 +81,14 @@ public class MatchGeneratorServiceIntegrationTest {
 
     }
 
-    private Condition<TournamentMatch> createTournamentMatchCondition(int rankDifference) {
+    private Condition<TournamentMatch> createTournamentMatchCondition(int idDifference) {
         return new Condition<TournamentMatch>() {
             @Override
             public boolean matches(TournamentMatch tournamentMatch) {
-                int teamOneRank = tournamentMatch.getMatch().getTeamOne().getRank();
-                int teamTwoRank = tournamentMatch.getMatch().getTeamTwo().getRank();
+                long teamOneId = tournamentMatch.getMatch().getTeamOne().getId();
+                long teamTwoId = tournamentMatch.getMatch().getTeamTwo().getId();
 
-                return Math.abs(teamOneRank - teamTwoRank) == rankDifference;
+                return Math.abs(teamOneId - teamTwoId) == idDifference;
             }
         };
     }
@@ -100,7 +100,7 @@ public class MatchGeneratorServiceIntegrationTest {
                             .nickname("nick" + i)
                             .name("name" + i)
                             .surname("surname" + i)
-                            .rank(i)
+                            .rankPoints(i)
                             .build()
             );
         }

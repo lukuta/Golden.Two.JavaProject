@@ -57,7 +57,7 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
 
     private List<Team> shuffleByCompetitorRank(List<Team> teamsToAssign) {
         List<Team> teamList = teamsToAssign.stream()
-                .sorted(Comparator.comparing(Team::getRank))
+                .sorted(Comparator.comparing(Team::getRankPoints).reversed())
                 .collect(Collectors.toList());
 
         int teamListHalfSize = teamsToAssign.size() / 2;

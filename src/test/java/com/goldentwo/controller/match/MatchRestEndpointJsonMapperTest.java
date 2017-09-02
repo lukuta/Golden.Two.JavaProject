@@ -34,7 +34,7 @@ public class MatchRestEndpointJsonMapperTest {
                 .nickname("Taz")
                 .name("Wiktor")
                 .surname("Wojtas")
-                .rank(1)
+                .rankPoints(1)
                 .build();
 
         PlayerDto playerTwo = PlayerDto.builder()
@@ -42,7 +42,7 @@ public class MatchRestEndpointJsonMapperTest {
                 .nickname("Neo")
                 .name("Filip")
                 .surname("Kubski")
-                .rank(2)
+                .rankPoints(2)
                 .build();
 
         PlayerDto playerThree = PlayerDto.builder()
@@ -50,7 +50,7 @@ public class MatchRestEndpointJsonMapperTest {
                 .nickname("olofmeister")
                 .name("Olof")
                 .surname("Kyaber")
-                .rank(3)
+                .rankPoints(3)
                 .build();
 
         PlayerDto playerFour = PlayerDto.builder()
@@ -58,21 +58,21 @@ public class MatchRestEndpointJsonMapperTest {
                 .nickname("JW")
                 .name("Jaspher")
                 .surname("Wild")
-                .rank(4)
+                .rankPoints(4)
                 .build();
 
         TeamDto teamOne = TeamDto.builder()
                 .id(1L)
                 .name("Virtus.Pro")
                 .players(Sets.newHashSet(playerOne, playerTwo))
-                .rank(1)
+                .rankPoints(1)
                 .build();
 
         TeamDto teamTwo = TeamDto.builder()
                 .id(2L)
                 .name("Fnatic")
                 .players(Sets.newHashSet(playerThree, playerFour))
-                .rank(2)
+                .rankPoints(2)
                 .build();
 
 
