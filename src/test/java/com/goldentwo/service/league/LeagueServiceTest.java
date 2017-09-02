@@ -43,13 +43,11 @@ public class LeagueServiceTest {
 
     private League leagueOne;
     private League leagueTwo;
-    private League leagueThree;
     private League leagueFour;
 
     private LeagueDto leagueOneDto;
     private LeagueDto leagueTwoDto;
     private LeagueDto leagueThreeDto;
-    private LeagueDto leagueFourDto;
 
     private MatchDto matchOne;
     private MatchDto savedMatchOne;
@@ -204,7 +202,7 @@ public class LeagueServiceTest {
 
         leagueTwoDto = leagueTwo.asDto();
 
-        leagueThree = League.builder()
+        League leagueThree = League.builder()
                 .name("FaceIt")
                 .actualRound(0)
                 .rounds(Sets.newHashSet())
@@ -219,7 +217,6 @@ public class LeagueServiceTest {
                 .rounds(Sets.newHashSet(savedRoundOne, savedRoundTwo, savedRoundThree))
                 .teams(Sets.newHashSet(teamOne, teamTwo, teamThree, teamFour))
                 .build();
-        leagueFourDto = leagueFour.asDto();
     }
 
     @Test

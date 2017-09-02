@@ -8,7 +8,6 @@ import com.goldentwo.model.League;
 import com.goldentwo.model.Round;
 import com.goldentwo.model.Team;
 import com.goldentwo.service.LeagueService;
-import com.goldentwo.service.impl.LeagueServiceImpl;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,10 +22,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Set;
 
-import static org.hamcrest.Matchers.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ActiveProfiles("test")
@@ -38,35 +36,9 @@ public class LeagueRestEndpointTest {
     @InjectMocks
     private LeagueRestEndpoint sut;
 
-    private League leagueOne;
-    private League leagueTwo;
-    private League leagueThree;
-    private League leagueFour;
-
     private LeagueDto leagueOneDto;
     private LeagueDto leagueTwoDto;
     private LeagueDto leagueThreeDto;
-    private LeagueDto leagueFourDto;
-
-    private MatchDto matchOne;
-    private MatchDto savedMatchOne;
-    private MatchDto matchTwo;
-    private MatchDto savedMatchTwo;
-    private MatchDto matchThree;
-    private MatchDto savedMatchThree;
-    private MatchDto matchFour;
-    private MatchDto savedMatchFour;
-    private MatchDto matchFive;
-    private MatchDto savedMatchFive;
-    private MatchDto matchSix;
-    private MatchDto savedMatchSix;
-
-    private Round roundOne;
-    private Round savedRoundOne;
-    private Round roundTwo;
-    private Round savedRoundTwo;
-    private Round roundThree;
-    private Round savedRoundThree;
 
     private MockMvc mockMvc;
 
@@ -94,107 +66,62 @@ public class LeagueRestEndpointTest {
                 .players(Sets.newHashSet())
                 .build();
 
-        matchOne = MatchDto.builder()
-                .scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamFour.asDto()).teamTwo(teamOne.asDto())
-                .ended(false).build();
-
-        savedMatchOne = MatchDto.builder()
+        MatchDto savedMatchOne = MatchDto.builder()
                 .id(1L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamFour.asDto()).teamTwo(teamOne.asDto())
                 .ended(false).build();
 
-        matchTwo = MatchDto.builder()
-                .scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamTwo.asDto()).teamTwo(teamThree.asDto())
-                .ended(false).build();
-
-        savedMatchTwo = MatchDto.builder()
+        MatchDto savedMatchTwo = MatchDto.builder()
                 .id(2L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamTwo.asDto()).teamTwo(teamThree.asDto())
                 .ended(false).build();
 
-        matchThree = MatchDto.builder()
-                .scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamThree.asDto()).teamTwo(teamFour.asDto())
-                .ended(false).build();
-
-        savedMatchThree = MatchDto.builder()
+        MatchDto savedMatchThree = MatchDto.builder()
                 .id(3L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamThree.asDto()).teamTwo(teamFour.asDto())
                 .ended(false).build();
 
-
-        matchFour = MatchDto.builder()
-                .scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamOne.asDto()).teamTwo(teamTwo.asDto())
-                .ended(false).build();
-
-        savedMatchFour = MatchDto.builder()
+        MatchDto savedMatchFour = MatchDto.builder()
                 .id(4L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamOne.asDto()).teamTwo(teamTwo.asDto())
                 .ended(false).build();
 
-        matchFive = MatchDto.builder()
-                .scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamFour.asDto()).teamTwo(teamTwo.asDto())
-                .ended(false).build();
-
-        savedMatchFive = MatchDto.builder()
+        MatchDto savedMatchFive = MatchDto.builder()
                 .id(5L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamFour.asDto()).teamTwo(teamTwo.asDto())
                 .ended(false).build();
 
-        matchSix = MatchDto.builder()
-                .scoreTeamOne(0).scoreTeamTwo(0)
-                .teamOne(teamThree.asDto()).teamTwo(teamOne.asDto())
-                .ended(false).build();
-
-        savedMatchSix = MatchDto.builder()
+        MatchDto savedMatchSix = MatchDto.builder()
                 .id(6L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
                 .teamOne(teamThree.asDto()).teamTwo(teamOne.asDto())
                 .ended(false).build();
 
-        roundOne = Round.builder()
-                .no(1)
-                .matches(Sets.newHashSet(savedMatchOne.asEntity(), savedMatchTwo.asEntity())).build();
-
-        savedRoundOne = Round.builder()
+        Round savedRoundOne = Round.builder()
                 .no(1).id(1L)
                 .matches(Sets.newHashSet(savedMatchOne.asEntity(), savedMatchTwo.asEntity())).build();
 
-        roundTwo = Round.builder()
-                .no(2)
-                .matches(Sets.newHashSet(savedMatchThree.asEntity(), savedMatchFour.asEntity())).build();
-
-        savedRoundTwo = Round.builder()
+        Round savedRoundTwo = Round.builder()
                 .no(2).id(2L)
                 .matches(Sets.newHashSet(savedMatchThree.asEntity(), savedMatchFour.asEntity())).build();
 
-        roundThree = Round.builder()
-                .no(3)
-                .matches(Sets.newHashSet(savedMatchFive.asEntity(), savedMatchSix.asEntity())).build();
-
-        savedRoundThree = Round.builder()
+        Round savedRoundThree = Round.builder()
                 .no(3).id(3L)
                 .matches(Sets.newHashSet(savedMatchFive.asEntity(), savedMatchSix.asEntity())).build();
 
-        leagueOne = League.builder().id(1L)
+        leagueOneDto = LeagueDto.builder().id(1L)
                 .name("ESL")
                 .actualRound(1)
                 .rounds(Sets.newHashSet())
                 .teams(Sets.newHashSet())
                 .build();
 
-        leagueOneDto = leagueOne.asDto();
-
-        leagueTwo = League.builder().id(2L)
+        League leagueTwo = League.builder().id(2L)
                 .name("FaceIt")
                 .actualRound(0)
                 .rounds(Sets.newHashSet(savedRoundOne, savedRoundTwo, savedRoundThree))
@@ -203,7 +130,7 @@ public class LeagueRestEndpointTest {
 
         leagueTwoDto = leagueTwo.asDto();
 
-        leagueThree = League.builder()
+        League leagueThree = League.builder()
                 .name("FaceIt")
                 .actualRound(0)
                 .rounds(Sets.newHashSet())
@@ -211,14 +138,6 @@ public class LeagueRestEndpointTest {
                 .build();
 
         leagueThreeDto = leagueThree.asDto();
-
-        leagueFour = League.builder()
-                .name("FaceIt")
-                .actualRound(0)
-                .rounds(Sets.newHashSet(savedRoundOne, savedRoundTwo, savedRoundThree))
-                .teams(Sets.newHashSet(teamOne, teamTwo, teamThree, teamFour))
-                .build();
-        leagueFourDto = leagueFour.asDto();
 
         mockMvc = MockMvcBuilders.standaloneSetup(new NotFoundException(), leagueService).build();
     }
