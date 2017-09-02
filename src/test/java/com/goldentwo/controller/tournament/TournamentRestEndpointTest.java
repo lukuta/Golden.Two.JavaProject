@@ -4,6 +4,7 @@ import com.goldentwo.controller.TournamentRestEndpoint;
 import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.exception.TournamentException;
 import com.goldentwo.service.TournamentService;
 import com.google.common.collect.Sets;
@@ -138,7 +139,7 @@ public class TournamentRestEndpointTest {
 
         Mockito
                 .when(tournamentService.findTournamentById(tournamentId))
-                .thenThrow(new TournamentException("Tournament " + tournamentId + "doesn't exist"));
+                .thenThrow(new NotFoundException("Tournament " + tournamentId + "doesn't exist"));
 
         mockMvc.perform(get("/tournaments/{id}", tournamentId))
                 .andExpect(status().isNotFound());
