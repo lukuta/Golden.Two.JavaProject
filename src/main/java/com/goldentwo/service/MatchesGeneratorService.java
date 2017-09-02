@@ -9,6 +9,6 @@ public interface MatchesGeneratorService {
     Set<TournamentMatch> generateTournamentMatches(Set<Team> teams, MatchGeneratorType type);
 
     enum MatchGeneratorType {
-        RANDOM, COMPETITOR_RANK
+        RANDOM, COMPETITOR_RANK, BASKETS
     }
 }

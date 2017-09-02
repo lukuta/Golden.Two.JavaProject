@@ -45,6 +45,8 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
             case COMPETITOR_RANK:
                 teamsToAssign = shuffleByCompetitorRank(teamsToAssign);
                 break;
+            case BASKETS:
+                teamsToAssign = shuffleByBaskets(teamsToAssign);
             default:
                 LOG.warn("Cannot find case for generator type. Used default one - RANDOM");
                 Collections.shuffle(teamsToAssign);
@@ -65,6 +67,21 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
             Collections.swap(teamList, i, j);
         }
 
+        return teamList;
+    }
+
+    private List<Team> shuffleByBaskets(List<Team> teamsToAssign) {
+        if (teamsToAssign.size() < 8) {
+            throw new BadRequestException("Teams size in basket type must be greater than 7");
+        }
+
+        List<Team> teamList = teamsToAssign.stream()
+                .sorted(Comparator.comparing(Team::getRankPoints).reversed())
+                .collect(Collectors.toList());
+
+        int basketSize = teamsToAssign.size() / 4;
+
+        
         return teamList;
     }
 
