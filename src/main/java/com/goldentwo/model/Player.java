@@ -23,11 +23,13 @@ public class Player {
     private String nickname;
     private String name;
     private String surname;
+    private int rank;
 
     public Player(PlayerDto playerDto) {
         this.nickname = playerDto.getNickname();
         this.name = playerDto.getName();
         this.surname = playerDto.getSurname();
+        this.rank = playerDto.getRank();
     }
 
     public PlayerDto asDto() {
@@ -36,6 +38,7 @@ public class Player {
                 .nickname(nickname)
                 .name(name)
                 .surname(surname)
+                .rank(rank)
                 .build();
     }
 

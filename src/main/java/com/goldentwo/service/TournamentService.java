@@ -13,7 +13,7 @@ public interface TournamentService {
 
     List<TournamentDto> findAllTournaments();
 
-    TournamentDto saveTournament(TournamentDto tournamentDto);
+    TournamentDto saveTournament(TournamentDto tournamentDto, MatchesGeneratorService.MatchGeneratorType type);
 
     ResponseEntity deleteTournament(Long id);
 

@@ -62,6 +62,7 @@ public class PlayerServiceImpl implements PlayerService {
         teamService.saveTeam(TeamDto.builder()
                 .name(savedPlayer.getNickname())
                 .players(Sets.newHashSet(savedPlayer))
+                .rank(playerDto.getRank())
                 .build());
 
         return savedPlayer;
