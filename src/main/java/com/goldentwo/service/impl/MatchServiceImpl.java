@@ -50,7 +50,7 @@ public class MatchServiceImpl implements MatchService {
     public MatchDto createMatch(MatchDto matchDto) {
         Match match = matchDto.asEntity();
 
-        return matchRepository.saveAndFlush(match).asDto();
+        return matchRepository.save(match).asDto();
     }
 
     @Override
@@ -107,7 +107,7 @@ public class MatchServiceImpl implements MatchService {
 
         Set<MatchPlayerSummaryDto> teamOneStats = matchDto.getTeamOne().getPlayers().stream()
                 .map((PlayerDto player) -> MatchPlayerSummaryDto.builder().playerNickname(player.getNickname())
-                .kills(0).deaths(0).build()).collect(Collectors.toSet());
+                        .kills(0).deaths(0).build()).collect(Collectors.toSet());
 
         matchSummaryDto.setTeamOneStatistics(teamOneStats);
 
