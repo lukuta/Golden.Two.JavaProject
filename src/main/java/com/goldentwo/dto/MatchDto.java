@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ public class MatchDto {
     private boolean ended;
 
     public Match asEntity() {
-        Set<Turn> turnSet = turns.stream().map(TurnDto::asEntity).collect(Collectors.toSet());
+        Set<Turn> turnSet = turns != null ? turns.stream().map(TurnDto::asEntity).collect(Collectors.toSet()) : new HashSet<>();
 
         return Match.builder().id(id).teamOne(teamOne.asEntity()).teamTwo(teamTwo.asEntity())
                 .scoreTeamOne(scoreTeamOne).scoreTeamTwo(scoreTeamTwo).turns(turnSet).ended(ended).build();
