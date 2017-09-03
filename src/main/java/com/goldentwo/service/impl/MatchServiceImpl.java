@@ -85,7 +85,7 @@ public class MatchServiceImpl implements MatchService {
         if (matchDto.getTeamOne().getId().equals(savedTurn.getWinner())) {
             matchDto.setScoreTeamOne(matchDto.getScoreTeamOne() + TURN_POINT_VALUE);
         } else {
-            matchDto.setScoreTeamOne(matchDto.getScoreTeamTwo() + TURN_POINT_VALUE);
+            matchDto.setScoreTeamTwo(matchDto.getScoreTeamTwo() + TURN_POINT_VALUE);
         }
 
         if (matchDto.getScoreTeamOne() == WINNING_SCORE || matchDto.getScoreTeamTwo() == WINNING_SCORE) {
