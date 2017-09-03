@@ -18,6 +18,8 @@ public class MatchSummaryDto {
     private TeamDto teamTwo;
     private int scoreTeamOne;
     private int scoreTeamTwo;
+    private boolean ended;
+    private Long winnerId;
     private Set<MatchPlayerSummaryDto> teamOneStatistics;
     private Set<MatchPlayerSummaryDto> teamTwoStatistics;
 

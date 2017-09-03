@@ -1,7 +1,6 @@
 package com.goldentwo.service.impl;
 
-import com.goldentwo.dto.MatchDto;
-import com.goldentwo.dto.TurnDto;
+import com.goldentwo.dto.*;
 import com.goldentwo.exception.BadRequestException;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Match;
@@ -13,8 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,6 +95,48 @@ public class MatchServiceImpl implements MatchService {
         updateMatch(matchDto);
 
         return savedTurn.asDto();
+    }
+
+    @Override
+    public MatchSummaryDto getMatchSummary(Long matchId) {
+        MatchDto matchDto = findMatchById(matchId);
+
+        MatchSummaryDto matchSummaryDto = MatchSummaryDto.builder().matchId(matchId).teamOne(matchDto.getTeamOne())
+                .teamTwo(matchDto.getTeamTwo()).scoreTeamOne(matchDto.getScoreTeamOne()).scoreTeamTwo(matchDto.getScoreTeamTwo())
+                .ended(matchDto.isEnded()).build();
+
+        Set<MatchPlayerSummaryDto> teamOneStats = matchDto.getTeamOne().getPlayers().stream()
+                .map((PlayerDto player) -> MatchPlayerSummaryDto.builder().playerNickname(player.getNickname())
+                .kills(0).deaths(0).build()).collect(Collectors.toSet());
+
+        matchSummaryDto.setTeamOneStatistics(teamOneStats);
+
+        Set<MatchPlayerSummaryDto> teamTwoStats = matchDto.getTeamTwo().getPlayers().stream()
+                .map((PlayerDto player) -> MatchPlayerSummaryDto.builder().playerNickname(player.getNickname())
+                        .kills(0).deaths(0).build()).collect(Collectors.toSet());
+
+        matchSummaryDto.setTeamTwoStatistics(teamTwoStats);
+
+        for (TurnDto turn : matchDto.getTurns()) {
+
+            countStatsForAllPlayersInSingleTurn(teamOneStats, turn);
+
+            countStatsForAllPlayersInSingleTurn(teamTwoStats, turn);
+        }
+
+        return matchSummaryDto;
+    }
+
+    private void countStatsForAllPlayersInSingleTurn(Set<MatchPlayerSummaryDto> teamOneStats, TurnDto turn) {
+        for (MatchPlayerSummaryDto playerStats : teamOneStats) {
+            if (turn.getKills().containsKey(playerStats.getPlayerNickname())) {
+                playerStats.setKills(playerStats.getKills() + turn.getKills().get(playerStats.getPlayerNickname()));
+            }
+
+            if (turn.getDeaths().contains(playerStats.getPlayerNickname())) {
+                playerStats.setDeaths(playerStats.getDeaths() + 1);
+            }
+        }
     }
 
 

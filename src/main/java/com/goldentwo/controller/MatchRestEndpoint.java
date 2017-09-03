@@ -2,6 +2,7 @@ package com.goldentwo.controller;
 
 import com.goldentwo.aspect.annotation.Monitored;
 import com.goldentwo.dto.MatchDto;
+import com.goldentwo.dto.MatchSummaryDto;
 import com.goldentwo.dto.TurnDto;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,11 @@ public class MatchRestEndpoint {
     @GetMapping(value = "/{id}")
     public MatchDto findMatchById(@PathVariable Long id) {
         return matchService.findMatchById(id);
+    }
+
+    @GetMapping(value = "/{id}/summary")
+    public MatchSummaryDto getMatchSummary(@PathVariable Long id) {
+        return matchService.getMatchSummary(id);
     }
 
     @PostMapping

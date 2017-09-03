@@ -14,6 +14,5 @@ public class MatchPlayerSummaryDto {
     private String playerNickname;
     private int kills;
     private int deaths;
-    private int mvps;
 
 }
