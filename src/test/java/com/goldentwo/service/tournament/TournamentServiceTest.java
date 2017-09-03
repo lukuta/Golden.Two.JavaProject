@@ -162,7 +162,7 @@ public class TournamentServiceTest {
 
         Mockito
                 .when(tournamentRepository.findByName(tournamentName))
-                .thenReturn(Optional.ofNullable(null));
+                .thenReturn(Optional.empty());
 
         sut.findTournamentByName(tournamentName);
     }
