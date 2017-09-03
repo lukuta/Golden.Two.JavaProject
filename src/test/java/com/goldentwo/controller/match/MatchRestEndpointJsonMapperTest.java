@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -83,6 +84,7 @@ public class MatchRestEndpointJsonMapperTest {
                 .teamTwo(teamTwo)
                 .scoreTeamOne(13)
                 .scoreTeamTwo(2)
+                .turns(new HashSet<>())
                 .build();
 
         File expectedMatch = new ClassPathResource("expected-match.json").getFile();

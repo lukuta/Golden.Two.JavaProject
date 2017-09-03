@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ public class Match {
     }
 
     public MatchDto asDto() {
-        Set<TurnDto> turnDtoSet = turns.stream().map(Turn::asDto).collect(Collectors.toSet());
+        Set<TurnDto> turnDtoSet = turns != null ? turns.stream().map(Turn::asDto).collect(Collectors.toSet()) : new HashSet<>();
 
         return MatchDto.builder()
                 .id(id)
