@@ -102,7 +102,7 @@ public class MatchGeneratorServiceImplTest {
         //TODO cannot properly mock tournamentMatchRepository behavior
 //        tournamentMatchSet.forEach(
 //                tournamentMatch -> Mockito
-//                        .when(matchService.saveMatch(tournamentMatch.getMatch().asDto()))
+//                        .when(matchService.createMatch(tournamentMatch.getMatch().asDto()))
 //                        .thenReturn(tournamentMatch.getMatch().asDto())
 //        );
 //

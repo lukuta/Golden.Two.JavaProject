@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -95,68 +96,80 @@ public class LeagueServiceTest {
 
         matchOne = MatchDto.builder()
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamFour.asDto()).teamTwo(teamOne.asDto())
                 .ended(false).build();
 
         savedMatchOne = MatchDto.builder()
                 .id(1L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamFour.asDto()).teamTwo(teamOne.asDto())
                 .ended(false).build();
 
         matchTwo = MatchDto.builder()
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamTwo.asDto()).teamTwo(teamThree.asDto())
                 .ended(false).build();
 
         savedMatchTwo = MatchDto.builder()
                 .id(2L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamTwo.asDto()).teamTwo(teamThree.asDto())
                 .ended(false).build();
 
         matchThree = MatchDto.builder()
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamThree.asDto()).teamTwo(teamFour.asDto())
                 .ended(false).build();
 
         savedMatchThree = MatchDto.builder()
                 .id(3L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamThree.asDto()).teamTwo(teamFour.asDto())
                 .ended(false).build();
 
 
         matchFour = MatchDto.builder()
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamOne.asDto()).teamTwo(teamTwo.asDto())
                 .ended(false).build();
 
         savedMatchFour = MatchDto.builder()
                 .id(4L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamOne.asDto()).teamTwo(teamTwo.asDto())
                 .ended(false).build();
 
         matchFive = MatchDto.builder()
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamFour.asDto()).teamTwo(teamTwo.asDto())
                 .ended(false).build();
 
         savedMatchFive = MatchDto.builder()
                 .id(5L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamFour.asDto()).teamTwo(teamTwo.asDto())
                 .ended(false).build();
 
         matchSix = MatchDto.builder()
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamThree.asDto()).teamTwo(teamOne.asDto())
                 .ended(false).build();
 
         savedMatchSix = MatchDto.builder()
                 .id(6L)
                 .scoreTeamOne(0).scoreTeamTwo(0)
+                .turns(new HashSet<>())
                 .teamOne(teamThree.asDto()).teamTwo(teamOne.asDto())
                 .ended(false).build();
 
@@ -289,27 +302,27 @@ public class LeagueServiceTest {
     @Test
     public void createNewLeagueTest() {
         Mockito
-                .when(matchService.saveMatch(matchOne))
+                .when(matchService.createMatch(matchOne))
                 .thenReturn(savedMatchOne);
 
         Mockito
-                .when(matchService.saveMatch(matchTwo))
+                .when(matchService.createMatch(matchTwo))
                 .thenReturn(savedMatchTwo);
 
         Mockito
-                .when(matchService.saveMatch(matchThree))
+                .when(matchService.createMatch(matchThree))
                 .thenReturn(savedMatchThree);
 
         Mockito
-                .when(matchService.saveMatch(matchFour))
+                .when(matchService.createMatch(matchFour))
                 .thenReturn(savedMatchFour);
 
         Mockito
-                .when(matchService.saveMatch(matchFive))
+                .when(matchService.createMatch(matchFive))
                 .thenReturn(savedMatchFive);
 
         Mockito
-                .when(matchService.saveMatch(matchSix))
+                .when(matchService.createMatch(matchSix))
                 .thenReturn(savedMatchSix);
 
         Mockito

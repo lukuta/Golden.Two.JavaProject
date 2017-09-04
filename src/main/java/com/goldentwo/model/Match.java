@@ -1,6 +1,7 @@
 package com.goldentwo.model;
 
 import com.goldentwo.dto.MatchDto;
+import com.goldentwo.dto.TurnDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Entity
@@ -24,6 +28,8 @@ public class Match {
     private Team teamOne;
     @ManyToOne
     private Team teamTwo;
+    @OneToMany
+    private Set<Turn> turns;
 
     @ColumnDefault(value = "0")
     private int scoreTeamOne;
@@ -39,6 +45,8 @@ public class Match {
     }
 
     public MatchDto asDto() {
+        Set<TurnDto> turnDtoSet = turns != null ? turns.stream().map(Turn::asDto).collect(Collectors.toSet()) : new HashSet<>();
+
         return MatchDto.builder()
                 .id(id)
                 .teamTwo(teamTwo != null ? teamTwo.asDto() : null)
@@ -46,6 +54,7 @@ public class Match {
                 .scoreTeamTwo(scoreTeamTwo)
                 .scoreTeamOne(scoreTeamOne)
                 .ended(ended)
+                .turns(turnDtoSet)
                 .build();
     }
 

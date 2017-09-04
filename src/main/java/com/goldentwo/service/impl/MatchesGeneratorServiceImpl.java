@@ -74,7 +74,7 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
         List<Match> matches = new ArrayList<>();
 
         for (int i = 0; i < teams.size(); i += 2) {
-            MatchDto matchDto = matchService.saveMatch(MatchDto.builder()
+            MatchDto matchDto = matchService.createMatch(MatchDto.builder()
                     .teamOne(teams.get(i).asDto())
                     .teamTwo(teams.get(i + 1).asDto())
                     .build());

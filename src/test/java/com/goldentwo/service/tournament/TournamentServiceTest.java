@@ -204,7 +204,7 @@ public class TournamentServiceTest {
                 .thenReturn(tournamentOne);
 
         Mockito
-                .when(matchService.saveMatch(any()))
+                .when(matchService.createMatch(any()))
                 .thenReturn(tournamentMatchOne.asDto().getMatch());
 
         Mockito

@@ -2,17 +2,15 @@ package com.goldentwo.controller;
 
 import com.goldentwo.aspect.annotation.Monitored;
 import com.goldentwo.dto.MatchDto;
-import com.goldentwo.exception.MatchException;
+import com.goldentwo.dto.MatchSummaryDto;
+import com.goldentwo.dto.TurnDto;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value = "matches")
@@ -26,7 +24,7 @@ public class MatchRestEndpoint {
     }
 
     @Monitored
-    @GetMapping()
+    @GetMapping
     public List<MatchDto> findAllMatches() {
         return matchService.findAllMatches();
     }
@@ -36,9 +34,19 @@ public class MatchRestEndpoint {
         return matchService.findMatchById(id);
     }
 
-    @PostMapping()
+    @GetMapping(value = "/{id}/summary")
+    public MatchSummaryDto getMatchSummary(@PathVariable Long id) {
+        return matchService.getMatchSummary(id);
+    }
+
+    @PostMapping
     public MatchDto saveMatch(@RequestBody @Valid MatchDto match) {
-        return matchService.saveMatch(match);
+        return matchService.createMatch(match);
+    }
+
+    @PostMapping(value = "/{id}/turn")
+    public TurnDto addTurn(@PathVariable Long id, @RequestBody TurnDto turnDto) {
+        return matchService.addTurn(id, turnDto);
     }
 
     @DeleteMapping(value = "/{id}")
