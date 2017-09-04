@@ -289,27 +289,27 @@ public class LeagueServiceTest {
     @Test
     public void createNewLeagueTest() {
         Mockito
-                .when(matchService.saveMatch(matchOne))
+                .when(matchService.createMatch(matchOne))
                 .thenReturn(savedMatchOne);
 
         Mockito
-                .when(matchService.saveMatch(matchTwo))
+                .when(matchService.createMatch(matchTwo))
                 .thenReturn(savedMatchTwo);
 
         Mockito
-                .when(matchService.saveMatch(matchThree))
+                .when(matchService.createMatch(matchThree))
                 .thenReturn(savedMatchThree);
 
         Mockito
-                .when(matchService.saveMatch(matchFour))
+                .when(matchService.createMatch(matchFour))
                 .thenReturn(savedMatchFour);
 
         Mockito
-                .when(matchService.saveMatch(matchFive))
+                .when(matchService.createMatch(matchFive))
                 .thenReturn(savedMatchFive);
 
         Mockito
-                .when(matchService.saveMatch(matchSix))
+                .when(matchService.createMatch(matchSix))
                 .thenReturn(savedMatchSix);
 
         Mockito
