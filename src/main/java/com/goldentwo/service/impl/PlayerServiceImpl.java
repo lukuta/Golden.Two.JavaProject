@@ -85,7 +85,7 @@ public class PlayerServiceImpl implements PlayerService {
     public ResponseEntity deletePlayer(Long id) {
         playerRepository.delete(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @Override
