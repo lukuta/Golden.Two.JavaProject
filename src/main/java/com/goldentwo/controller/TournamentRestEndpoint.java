@@ -35,7 +35,6 @@ public class TournamentRestEndpoint {
         return tournamentService.findTournamentByName(name);
     }
 
-    //TODO need to add @InitBinder method for parsing enum param
     @PostMapping
     public TournamentDto createOrUpdateTournament(@RequestBody TournamentDto tournamentDto,
                                                   @RequestParam(name = "type", required = false, defaultValue = "RANDOM")

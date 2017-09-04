@@ -1,5 +1,6 @@
 package com.goldentwo.service.generator;
 
+import com.goldentwo.Janitor;
 import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.TournamentMatch;
@@ -32,35 +33,21 @@ public class MatchGeneratorServiceIntegrationTest {
 
     @Autowired
     private MatchesGeneratorService matchesGeneratorService;
-
-    @Autowired
-    private TournamentMatchRepository tournamentMatchRepository;
-    @Autowired
-    private TournamentRepository tournamentRepository;
-    @Autowired
-    private PlayerRepository playerRepository;
-    @Autowired
-    private MatchRepository matchRepository;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
     private PlayerService playerService;
+    @Autowired
+    private Janitor janitor;
 
     @Before
     public void initialize() {
-        matchRepository.deleteAll();
-        tournamentMatchRepository.deleteAll();
-        tournamentRepository.deleteAll();
-        teamRepository.deleteAll();
+        tearDown();
     }
 
     @After
     public void tearDown() {
-        matchRepository.deleteAll();
-        tournamentMatchRepository.deleteAll();
-        tournamentRepository.deleteAll();
-        teamRepository.deleteAll();
-        playerRepository.deleteAll();
+        janitor.clearRepos();
     }
 
     @Test

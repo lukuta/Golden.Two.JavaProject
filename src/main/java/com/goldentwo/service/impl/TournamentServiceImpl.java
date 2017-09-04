@@ -71,7 +71,7 @@ public class TournamentServiceImpl implements TournamentService {
 
     private Set<Team> getTeams(TournamentDto tournamentDto) {
         Set<Team> teams;
-        if (tournamentDto.getTeams().isEmpty()) {
+        if (!tournamentDto.getTeams().isEmpty()) {
 
             teams = tournamentDto.getTeams().stream()
                     .map(teamDto -> {
