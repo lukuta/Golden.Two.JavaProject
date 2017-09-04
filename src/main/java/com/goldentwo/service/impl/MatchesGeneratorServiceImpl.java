@@ -99,6 +99,9 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
 
     private void placeTeamsIntoBaskets(List<Team> teamList, List<List<Team>> teamBaskets) {
         int basketsAmount = teamList.size() / BASKET_SIZE;
+        for (int i = 0; i < basketsAmount; i++) {
+            teamBaskets.add(new ArrayList<>());
+        }
 
         for (int i = 0; i < BASKET_SIZE; i++) {
             for (int basketIndex = 0; basketIndex < basketsAmount; basketIndex++) {
