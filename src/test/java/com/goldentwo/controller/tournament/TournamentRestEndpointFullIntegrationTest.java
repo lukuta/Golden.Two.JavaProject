@@ -46,7 +46,6 @@ public class TournamentRestEndpointFullIntegrationTest {
     @Autowired
     private Janitor janitor;
 
-
     @Before
     public void init() {
         tearDown();
@@ -78,9 +77,9 @@ public class TournamentRestEndpointFullIntegrationTest {
                 contentType(ContentType.JSON).
                 header("Accept", "application/json").
                 body(TournamentDto.builder().name(tournamentName).teams(teams).build()).
-                when().
+        when().
                 post("/api/v1/tournaments?type=RANDOM").
-                then().
+        then().
                 statusCode(200);
 
         Optional<Tournament> foundTournamentOptional = tournamentRepository.findByName(tournamentName);
@@ -102,9 +101,9 @@ public class TournamentRestEndpointFullIntegrationTest {
                 contentType(ContentType.JSON).
                 header("Accept", "application/json").
                 body(TournamentDto.builder().name(tournamentName).teams(teams).build()).
-                when().
+        when().
                 post("/api/v1/tournaments?type=COMPETITOR_RANK").
-                then().
+        then().
                 statusCode(200);
 
         Optional<Tournament> foundTournamentOptional = tournamentRepository.findByName(tournamentName);
@@ -127,9 +126,9 @@ public class TournamentRestEndpointFullIntegrationTest {
                 contentType(ContentType.JSON).
                 header("Accept", "application/json").
                 body(TournamentDto.builder().name(tournamentName).teams(teams).build()).
-                when().
+        when().
                 post("/api/v1/tournaments?type=BASKETS").
-                then().
+        then().
                 statusCode(200);
 
         Optional<Tournament> foundTournamentOptional = tournamentRepository.findByName(tournamentName);
@@ -153,9 +152,9 @@ public class TournamentRestEndpointFullIntegrationTest {
                 contentType(ContentType.JSON).
                 header("Accept", "application/json").
                 body(TournamentDto.builder().name(tournamentName).teams(teams).build()).
-                when().
+        when().
                 post("/api/v1/tournaments?type=BASKETS").
-                then().
+        then().
                 statusCode(400);
     }
 }
