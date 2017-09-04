@@ -19,7 +19,6 @@ public class InitDatabase {
     @Autowired
     MatchRepository matchRepository;
 
-    @PostConstruct
     public void initDB(){
         for (long i = 1; i <= matchesSize; i++) {
             Match match = Match.builder().id(i).build();
