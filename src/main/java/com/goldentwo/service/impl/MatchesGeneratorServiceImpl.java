@@ -112,14 +112,8 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
     }
 
     private void checkTeamsAmount(List<Team> teamsToAssign) {
-        int teamsAmount = teamsToAssign.size();
-
-        if (teamsAmount < 8) {
-            throw new BadRequestException("Teams size in basket type must be greater than 7");
-        } else if (teamsAmount > 32) {
-            throw new BadRequestException("Team size in basket type must by lesser than 32");
-        } else if (teamsAmount % 4 != 0) {
-            throw new BadRequestException("Each basket must contain exactly 4 teams");
+        if (teamsToAssign.size() > 32) {
+            throw new BadRequestException("Team size in basket type must be lesser than 32");
         }
     }
 
