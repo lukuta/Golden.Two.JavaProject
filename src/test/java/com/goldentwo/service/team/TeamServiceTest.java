@@ -1,8 +1,11 @@
 package com.goldentwo.service.team;
 
 import com.goldentwo.dto.TeamDto;
+import com.goldentwo.dto.TeamStatisticsDto;
+import com.goldentwo.model.Match;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
+import com.goldentwo.repository.MatchRepository;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.service.impl.TeamServiceImpl;
@@ -15,9 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -30,6 +31,9 @@ public class TeamServiceTest {
     @Mock
     private PlayerRepository playerRepository;
 
+    @Mock
+    private MatchRepository matchRepository;
+
     @InjectMocks
     private TeamServiceImpl sut;
 
@@ -40,6 +44,10 @@ public class TeamServiceTest {
 
     private Player playerOne;
     private Player playerTwo;
+
+    private List<Match> matches;
+
+    private TeamStatisticsDto teamStatistics;
 
     @Before
     public void initialize() {
@@ -65,6 +73,19 @@ public class TeamServiceTest {
                 .players(Sets.newHashSet(playerOne, playerTwo, playerThree, playerFour, playerFive))
                 .build();
         teamTwoDto = teamTwo.asDto();
+
+        Match matchOne = Match.builder().id(1L).ended(true).teamOne(teamOne).teamTwo(teamTwo)
+                .scoreTeamOne(16).scoreTeamTwo(13).turns(new HashSet<>()).build();
+
+        Match matchTwo = Match.builder().id(1L).ended(true).teamOne(teamOne).teamTwo(teamTwo)
+                .scoreTeamOne(13).scoreTeamTwo(16).turns(new HashSet<>()).build();
+
+        Match matchThree = Match.builder().id(1L).ended(true).teamOne(teamOne).teamTwo(teamTwo)
+                .scoreTeamOne(16).scoreTeamTwo(10).turns(new HashSet<>()).build();
+
+        matches = Arrays.asList(matchOne, matchTwo, matchThree);
+
+        teamStatistics = TeamStatisticsDto.builder().wins(2).defeats(1).wd(2).teamId(teamOne.getId()).build();
     }
 
     @Test
@@ -140,5 +161,22 @@ public class TeamServiceTest {
         Mockito
                 .when(teamRepository.saveAndFlush(any()))
                 .thenReturn(teamOne);
+    }
+
+    @Test
+    public void findTeamStatisticsTest() {
+        Long teamId = 1L;
+
+        Mockito.when(teamRepository.findOne(teamId))
+                .thenReturn(teamOne);
+
+        Mockito.when(matchRepository.findMatchesByTeamOneOrTeamTwoAndEnded(teamOne, teamOne, true))
+                .thenReturn(Optional.of(matches));
+
+        TeamStatisticsDto teamStatsFromSut = sut.findTeamStatistics(teamId);
+
+        assertThat(teamStatsFromSut)
+                .isNotNull()
+                .isEqualTo(teamStatistics);
     }
 }

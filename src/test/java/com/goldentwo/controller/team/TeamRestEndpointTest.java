@@ -4,6 +4,7 @@ package com.goldentwo.controller.team;
 import com.goldentwo.controller.TeamRestEndpoint;
 import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
+import com.goldentwo.dto.TeamStatisticsDto;
 import com.goldentwo.model.Player;
 import com.goldentwo.service.TeamService;
 import com.google.common.collect.Sets;
@@ -34,6 +35,8 @@ public class TeamRestEndpointTest {
     private PlayerDto playerFour;
     private TeamDto teamOne;
     private TeamDto teamTwo;
+
+    private TeamStatisticsDto teamStats;
 
     @Before
     public void initialize() {
@@ -75,6 +78,8 @@ public class TeamRestEndpointTest {
                 .name("GoldenFive")
                 .players(Sets.newHashSet(playerThree, playerFour))
                 .build();
+
+        teamStats = TeamStatisticsDto.builder().wins(2).defeats(1).wd(2).teamId(teamOne.getId()).build();
     }
 
     @Test
@@ -105,5 +110,20 @@ public class TeamRestEndpointTest {
         assertThat(teamFromSut)
                 .isNotNull()
                 .isEqualTo(teamOne);
+    }
+
+    @Test
+    public void findTeamStatisticsTest() {
+        Long teamId = 1L;
+
+        Mockito
+                .when(teamService.findTeamStatistics(teamId))
+                .thenReturn(teamStats);
+
+        TeamStatisticsDto statsFromSut = sut.findTeamStatistics(teamId);
+
+        assertThat(statsFromSut)
+                .isNotNull()
+                .isEqualTo(teamStats);
     }
 }
