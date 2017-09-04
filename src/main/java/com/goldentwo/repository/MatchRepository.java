@@ -11,4 +11,5 @@ import java.util.Optional;
 @Repository
 public interface MatchRepository extends JpaRepository<Match, Long> {
     Optional<List<Match>> findMatchesByTeamOneOrTeamTwo(Team teamOne, Team teamTwo);
+    Optional<List<Match>> findMatchesByTeamOneOrTeamTwoAndEnded(Team teamOne, Team teamTwo, boolean ended);
 }
