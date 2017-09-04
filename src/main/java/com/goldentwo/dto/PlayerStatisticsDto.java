@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class PlayerStatisticsDto {
 
     private Long playerId;
-    private Long kills;
-    private Long deaths;
-    private Long kd;
+    private int kills;
+    private int deaths;
+    private double kd;
 
 }
