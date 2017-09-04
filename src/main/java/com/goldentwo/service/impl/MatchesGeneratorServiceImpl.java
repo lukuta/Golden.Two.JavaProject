@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
 
     private static final Logger LOG = LoggerFactory.getLogger(MatchesGeneratorServiceImpl.class);
+    private static final int BASKET_SIZE = 4;
 
     private final TournamentMatchRepository tournamentMatchRepository;
     private final MatchService matchService;
@@ -45,6 +46,9 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
             case COMPETITOR_RANK:
                 teamsToAssign = shuffleByCompetitorRank(teamsToAssign);
                 break;
+            case BASKETS:
+                teamsToAssign = shuffleByBaskets(teamsToAssign);
+                break;
             default:
                 LOG.warn("Cannot find case for generator type. Used default one - RANDOM");
                 Collections.shuffle(teamsToAssign);
@@ -66,6 +70,51 @@ public class MatchesGeneratorServiceImpl implements MatchesGeneratorService {
         }
 
         return teamList;
+    }
+
+    private List<Team> shuffleByBaskets(List<Team> teamsToAssign) {
+        checkTeamsAmount(teamsToAssign);
+
+        List<Team> teamList = teamsToAssign.stream()
+                .sorted(Comparator.comparing(Team::getRankPoints).reversed())
+                .collect(Collectors.toList());
+
+        List<List<Team>> teamBaskets = new ArrayList<>();
+        placeTeamsIntoBaskets(teamList, teamBaskets);
+
+        return drawTeams(teamBaskets);
+    }
+
+    private List<Team> drawTeams(List<List<Team>> teamBaskets) {
+        List<Team> drawnTeams = new ArrayList<>();
+        teamBaskets.forEach(Collections::shuffle);
+        for (int i = 0; i < BASKET_SIZE; i++) {
+            for (List<Team> teamBasket : teamBaskets) {
+                drawnTeams.add(teamBasket.get(i));
+            }
+        }
+
+        return drawnTeams;
+    }
+
+    private void placeTeamsIntoBaskets(List<Team> teamList, List<List<Team>> teamBaskets) {
+        int basketsAmount = teamList.size() / BASKET_SIZE;
+        for (int i = 0; i < basketsAmount; i++) {
+            teamBaskets.add(new ArrayList<>());
+        }
+
+        for (int i = 0; i < BASKET_SIZE; i++) {
+            for (int basketIndex = 0; basketIndex < basketsAmount; basketIndex++) {
+                int teamIndex = i * basketsAmount + basketIndex;
+                teamBaskets.get(basketIndex).add(teamList.get(teamIndex));
+            }
+        }
+    }
+
+    private void checkTeamsAmount(List<Team> teamsToAssign) {
+        if (teamsToAssign.size() > 32) {
+            throw new BadRequestException("Team size in basket type must be lesser than 32");
+        }
     }
 
     private Set<TournamentMatch> createTournamentMatches(List<Team> teams) {

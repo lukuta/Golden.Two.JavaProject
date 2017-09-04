@@ -1,5 +1,6 @@
 package com.goldentwo.service.generator;
 
+import com.goldentwo.Janitor;
 import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.TournamentMatch;
@@ -27,42 +28,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class MatchGeneratorServiceIntegrationTest {
 
-    @Autowired
-    private MatchesGeneratorService matchesGeneratorService;
+    public static final int RANK_POSITION_DIFFERENCE = 4;
+    public static final int BASKET_SIZE = 4;
 
     @Autowired
-    private TournamentMatchRepository tournamentMatchRepository;
-    @Autowired
-    private TournamentRepository tournamentRepository;
-    @Autowired
-    private MatchRepository matchRepository;
+    private MatchesGeneratorService matchesGeneratorService;
     @Autowired
     private TeamRepository teamRepository;
     @Autowired
-    private PlayerRepository playerRepository;
-    @Autowired
     private PlayerService playerService;
+    @Autowired
+    private Janitor janitor;
 
     @Before
     public void initialize() {
-        matchRepository.deleteAll();
-        tournamentMatchRepository.deleteAll();
-        tournamentRepository.deleteAll();
-        teamRepository.deleteAll();
+        tearDown();
     }
 
     @After
     public void tearDown() {
-        matchRepository.deleteAll();
-        tournamentMatchRepository.deleteAll();
-        tournamentRepository.deleteAll();
-        teamRepository.deleteAll();
-        playerRepository.deleteAll();
+        janitor.clearRepos();
     }
 
     @Test
-    public void teamsMatchRankShouldBeVaryAbout4Ranks() {
-        initPlayers();
+    public void matchTeamsRankShouldBeVaryAboutGivenRankPositions() {
+        initPlayers(8);
         List<Team> teamList = teamRepository.findAll();
 
         Set<TournamentMatch> tournamentMatches = matchesGeneratorService.generateTournamentMatches(
@@ -70,31 +60,40 @@ public class MatchGeneratorServiceIntegrationTest {
                 MatchesGeneratorService.MatchGeneratorType.COMPETITOR_RANK
         );
 
-        Condition<TournamentMatch> tournamentMatchCondition = createTournamentMatchCondition(4);
+        Condition<TournamentMatch> competitorRankMatchCondition =
+                ConditionCreator.createCompetitorRankMatchCondition(RANK_POSITION_DIFFERENCE);
 
         tournamentMatches.forEach(tournamentMatch -> {
             if (tournamentMatch.getMatch() != null) {
                 assertThat(tournamentMatch)
-                        .is(tournamentMatchCondition);
+                        .is(competitorRankMatchCondition);
             }
         });
-
     }
 
-    private Condition<TournamentMatch> createTournamentMatchCondition(int idDifference) {
-        return new Condition<TournamentMatch>() {
-            @Override
-            public boolean matches(TournamentMatch tournamentMatch) {
-                long teamOneId = tournamentMatch.getMatch().getTeamOne().getId();
-                long teamTwoId = tournamentMatch.getMatch().getTeamTwo().getId();
+    @Test
+    public void ensureThatAllMatchesWereDrawnFromSeparateBaskets() {
+        initPlayers(16);
+        List<Team> teamList = teamRepository.findAll();
 
-                return Math.abs(teamOneId - teamTwoId) == idDifference;
+        Set<TournamentMatch> tournamentMatches = matchesGeneratorService.generateTournamentMatches(
+                Sets.newHashSet(teamList),
+                MatchesGeneratorService.MatchGeneratorType.BASKETS
+        );
+
+        Condition<TournamentMatch> basketMatchCondition =
+                ConditionCreator.createBasketMatchCondition(teamList.size());
+
+        tournamentMatches.forEach(tournamentMatch -> {
+            if (tournamentMatch.getMatch() != null) {
+                assertThat(tournamentMatch)
+                        .is(basketMatchCondition);
             }
-        };
+        });
     }
 
-    private void initPlayers() {
-        for (int i = 1; i < 9; i++) {
+    private void initPlayers(int playersAmount) {
+        for (int i = 1; i <= playersAmount; i++) {
             playerService.savePlayer(
                     PlayerDto.builder()
                             .nickname("nick" + i)
@@ -103,6 +102,34 @@ public class MatchGeneratorServiceIntegrationTest {
                             .rankPoints(i)
                             .build()
             );
+        }
+    }
+
+    static class ConditionCreator {
+        static Condition<TournamentMatch> createBasketMatchCondition(int teamAmount) {
+            return new Condition<TournamentMatch>() {
+                @Override
+                public boolean matches(TournamentMatch tournamentMatch) {
+                    int rankDifferenceBetweenOneBasketTeams = teamAmount / BASKET_SIZE;
+
+                    long teamOneId = tournamentMatch.getMatch().getTeamOne().getId();
+                    long teamTwoId = tournamentMatch.getMatch().getTeamTwo().getId();
+
+                    return Math.abs(teamOneId - teamTwoId) % rankDifferenceBetweenOneBasketTeams != 0;
+                }
+            };
+        }
+
+        static Condition<TournamentMatch> createCompetitorRankMatchCondition(int idDifference) {
+            return new Condition<TournamentMatch>() {
+                @Override
+                public boolean matches(TournamentMatch tournamentMatch) {
+                    long teamOneId = tournamentMatch.getMatch().getTeamOne().getId();
+                    long teamTwoId = tournamentMatch.getMatch().getTeamTwo().getId();
+
+                    return Math.abs(teamOneId - teamTwoId) == idDifference;
+                }
+            };
         }
     }
 }
