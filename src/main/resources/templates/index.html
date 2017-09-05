@@ -26,20 +26,79 @@
         <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
     </div>
 </div>
+<div class="container" style="margin-top: 3em">
+    <div>
+        <button ng-click="home.checkBetting()" class="btn btn-secondary">Check if betting is allowed</button>
+    </div>
+    <div>
+        <button ng-click="home.getBettingTimes()" class="btn btn-secondary">GetBettingTimes</button>
+    </div>
+    <div>
+        <label>Username</label><input ng-model="home.data.username"/>
+        <label>Password</label><input type="password" ng-model="home.data.password"/>
+        <a href="#" ng-click="home.login()">Login</a>
+    </div>
+    <div class="container" ng-show="home.gotAccessToken">
+        <label>New hour bet time from</label><input type="number" min="0" max="23" ng-model="home.time.fromHours"/>
+        <label>New minutes bet time from</label><input type="number" min="0" max="59" ng-model="home.time.fromMinutes"/>
+        <label>New hour bet time to</label><input type="number" min="0" max="23" ng-model="home.time.toHours"/>
+        <label>New minutes bet time to</label><input type="number" min="0" max="59" ng-model="home.time.toMinutes"/>
+
+        <a href="#" ng-click="home.setNewBettingTimes()">Set new betting times</a>
+    </div>
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.6/angular.min.js"></script>
 <script type="text/javascript">
-    angular.module("app", []).controller("home", function ($http, $location) {
+    angular.module("app", []).controller("home", function ($http, $location, $httpParamSerializer) {
+
         var self = this;
-        $http.get("/api/v1/me").success(function (data) {
-            self.user = data.userAuthentication.details.name;
-            self.login = data.userAuthentication.details.login ? data.userAuthentication.details.login : "N/A";
+
+        self.data = {
+            grant_type: "password",
+            username: "",
+            password: "",
+            client_id: "client"
+        };
+        self.encoded = btoa("client:secret");
+        self.access_token = "";
+        self.gotAccessToken = false;
+        self.time = {
+            fromHours: "",
+            fromMinutes: "",
+            toHours: "",
+            toMinutes: ""
+        };
+
+        $http.get("/api/v1/me").success(function (response) {
+            self.user = response.userAuthentication.details.name;
+            self.login = response.userAuthentication.details.login ? response.userAuthentication.details.login : "N/A";
             self.authenticated = true;
         }).error(function () {
             self.user = "N/A";
             self.login = "N/A";
             self.authenticated = false;
         });
+
+        self.login = function () {
+            var req = {
+                method: 'POST',
+                url: "http://localhost:9191/oauth/token",
+                headers: {
+                    "Authorization": "Basic " + self.encoded,
+                    "Content-type": "application/x-www-form-urlencoded; charset=utf-8"
+                },
+                data: $httpParamSerializer(self.data)
+            };
+            $http(req).success(function (response) {
+                console.log(response);
+                self.access_token = response.access_token;
+                self.gotAccessToken = true;
+                alert(response.access_token);
+            }).error(function () {
+                alert("Bad credentials!");
+            });
+        };
 
         self.logout = function () {
             $http.post('/api/v1/logout', {}).success(function () {
@@ -50,6 +109,76 @@
                 self.authenticated = false;
             });
         };
+
+        self.checkBetting = function () {
+            $http.get('http://localhost:9191/is-betting-allowed', {})
+                .success(function (response) {
+                    var alertMsg = "Betting is ";
+                    alertMsg += response ? "allowed" : "permitted";
+                    alert(alertMsg);
+                })
+                .error(function () {
+                    console.log("checkBetting() - some error occurred");
+                });
+        };
+
+        self.setNewBettingTimes = function () {
+            var req = {
+                method: 'PUT',
+                url: "http://localhost:9191/betting-times",
+                headers: {
+                    "Content-type": "application/json; charset=utf-8"
+                },
+                params: {
+                    access_token: self.access_token,
+                    fromHours: self.time.fromHours,
+                    fromMinutes: self.time.fromMinutes,
+                    toHours: self.time.toHours,
+                    toMinutes: self.time.toMinutes
+                }
+            };
+            $http(req).success(function (response) {
+                console.log(response);
+            }).error(function (error, status) {
+                alert("We can't do it: " + status);
+                console.log({ message: error, status: status});
+            });
+        };
+
+        self.getBettingTimes = function () {
+            var createBettingTimeMessage = function (response) {
+
+                var timeFromHour = response.timeFrom.hour;
+                var timeFromMinute = response.timeFrom.minute;
+                var timeToHour = response.timeTo.hour;
+                var timeToMinute = response.timeTo.minute;
+
+                if (true) {
+                    timeFromHour = "0" + timeFromHour;
+                }
+                if (true) {
+                    timeFromMinute = "0" + timeFromMinute;
+                }
+                if (false) {
+                    timeToHour = "0" + timeToHour;
+                }
+                if (true) {
+                    timeToMinute = "0" + timeToMinute;
+                }
+
+                return "From:" + timeFromHour + ":" + timeFromMinute +
+                    "\n" + "To:" + timeToHour + ":" + timeToMinute;
+            };
+
+            $http.get('http://localhost:9191/betting-times', {})
+                .success(function (response) {
+                    var message = createBettingTimeMessage(response);
+                    alert(message);
+                })
+                .error(function () {
+                    console.log("getBettingTimes() - some error occurred");
+                });
+        }
     });
 </script>
 </body>

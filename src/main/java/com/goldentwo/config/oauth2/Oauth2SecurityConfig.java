@@ -32,6 +32,9 @@ import java.util.List;
 @EnableAuthorizationServer
 public class Oauth2SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    public static final String LOGIN_FACEBOOK = "/login/facebook";
+    public static final String LOGIN_GITHUB = "/login/github";
+
     private final OAuth2ClientContext oauth2ClientContext;
 
     @Autowired
@@ -54,8 +57,8 @@ public class Oauth2SecurityConfig extends WebSecurityConfigurerAdapter {
     private Filter ssoFilter() {
         CompositeFilter filter = new CompositeFilter();
         List<Filter> filters = new ArrayList<>();
-        filters.add(ssoFilter(facebook(), "/login/facebook"));
-        filters.add(ssoFilter(github(), "/login/github"));
+        filters.add(ssoFilter(facebook(), LOGIN_FACEBOOK));
+        filters.add(ssoFilter(github(), LOGIN_GITHUB));
         filter.setFilters(filters);
         return filter;
     }
