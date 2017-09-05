@@ -56,15 +56,12 @@ public class LeagueRestEndpointFullIntegrationTest {
     @Before
     public void init() {
         leagueRepository.deleteAll();
-        teamRepository.deleteAll();
-        playerRepository.deleteAll();
-
         for (int i = 1; i < 5; i++) {
             playerService.savePlayer(
                     PlayerDto.builder()
-                            .name("name" + i)
+                            .name("name" + i + 100)
                             .surname("surname" + i)
-                            .nickname("nickname" + i)
+                            .nickname("nickname" + i + 100)
                             .rankPoints(i)
                             .build()
             );
