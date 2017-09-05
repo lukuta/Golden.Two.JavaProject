@@ -75,6 +75,10 @@ public class PlayerRestEndpointFullIntegrationTest {
                 .isNotNull();
 
         assertThat(team.getPlayers())
-                .contains(player);
+                .hasSize(1);
+
+        assertThat(team.getPlayers().iterator().next().getNickname())
+                .isEqualTo("klimeck");
+
     }
 }
