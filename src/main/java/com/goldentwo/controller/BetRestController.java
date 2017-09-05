@@ -15,12 +15,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/bets")
-public class BetRestContoller {
+public class BetRestController {
 
     private final BetService betService;
 
     @Autowired
-    public BetRestContoller(BetService betService) {
+    public BetRestController(BetService betService) {
         this.betService = betService;
     }
 
@@ -37,6 +37,9 @@ public class BetRestContoller {
 
     @PostMapping("/my")
     public List<Bet> getOwnBets(Principal principal) {
+        if (principal.getName() == null) {
+            throw new UnauthorizedUserException("Authentication is needed");
+        }
         return betService.getOwnBets(principal);
     }
 }
