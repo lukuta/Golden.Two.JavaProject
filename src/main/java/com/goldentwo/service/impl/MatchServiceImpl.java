@@ -4,7 +4,7 @@ import com.goldentwo.dto.*;
 import com.goldentwo.exception.BadRequestException;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Match;
-import com.goldentwo.model.Player;
+import com.goldentwo.model.Team;
 import com.goldentwo.model.Turn;
 import com.goldentwo.repository.MatchRepository;
 import com.goldentwo.repository.PlayerRepository;
@@ -12,10 +12,14 @@ import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.repository.TurnRepository;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -168,6 +172,11 @@ public class MatchServiceImpl implements MatchService {
         matchRepository.delete(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public List<MatchDto> findMatchesBySpecificFilter(Specification<Match> spec) {
+        return matchRepository.findAll(spec).stream().map(Match::asDto).collect(Collectors.toList());
     }
 
 }
