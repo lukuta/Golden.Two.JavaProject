@@ -4,15 +4,22 @@ import com.goldentwo.dto.*;
 import com.goldentwo.exception.BadRequestException;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Match;
+import com.goldentwo.model.Team;
 import com.goldentwo.model.Turn;
 import com.goldentwo.repository.MatchRepository;
+import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.repository.TurnRepository;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,15 +27,22 @@ public class MatchServiceImpl implements MatchService {
 
     public static final int TURN_POINT_VALUE = 1;
     public static final int WINNING_SCORE = 16;
+    public static final int RANK_POINTS_FOR_WIN = 50;
 
     private MatchRepository matchRepository;
 
     private TurnRepository turnRepository;
 
+    private TeamRepository teamRepository;
+
+    private PlayerRepository playerRepository;
+
     @Autowired
-    public MatchServiceImpl(MatchRepository matchRepository, TurnRepository turnRepository) {
+    public MatchServiceImpl(MatchRepository matchRepository, TurnRepository turnRepository, TeamRepository teamRepository, PlayerRepository playerRepository) {
         this.matchRepository = matchRepository;
         this.turnRepository = turnRepository;
+        this.teamRepository = teamRepository;
+        this.playerRepository = playerRepository;
     }
 
     @Override
@@ -88,13 +102,26 @@ public class MatchServiceImpl implements MatchService {
             matchDto.setScoreTeamTwo(matchDto.getScoreTeamTwo() + TURN_POINT_VALUE);
         }
 
-        if (matchDto.getScoreTeamOne() == WINNING_SCORE || matchDto.getScoreTeamTwo() == WINNING_SCORE) {
+        if (matchDto.getScoreTeamOne() == WINNING_SCORE) {
             matchDto.setEnded(true);
+            updateRankingPoints(matchDto.getTeamOne());
+        } else if (matchDto.getScoreTeamTwo() == WINNING_SCORE) {
+            matchDto.setEnded(true);
+            updateRankingPoints(matchDto.getTeamTwo());
         }
 
         updateMatch(matchDto);
 
         return savedTurn.asDto();
+    }
+
+    private void updateRankingPoints(TeamDto teamDto) {
+        teamDto.setRankPoints(teamDto.getRankPoints() + RANK_POINTS_FOR_WIN);
+        for (PlayerDto playerDto : teamDto.getPlayers()) {
+            playerDto.setRankPoints(playerDto.getRankPoints() + RANK_POINTS_FOR_WIN);
+            playerRepository.save(playerDto.asEntity());
+        }
+        teamRepository.save(teamDto.asEntity());
     }
 
     @Override
@@ -145,6 +172,11 @@ public class MatchServiceImpl implements MatchService {
         matchRepository.delete(id);
 
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public List<MatchDto> findMatchesBySpecificFilter(Specification<Match> spec) {
+        return matchRepository.findAll(spec).stream().map(Match::asDto).collect(Collectors.toList());
     }
 
 }

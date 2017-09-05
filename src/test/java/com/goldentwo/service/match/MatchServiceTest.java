@@ -8,6 +8,8 @@ import com.goldentwo.exception.BadRequestException;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.*;
 import com.goldentwo.repository.MatchRepository;
+import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.repository.TurnRepository;
 import com.goldentwo.service.impl.MatchServiceImpl;
 import com.google.common.collect.Sets;
@@ -31,8 +33,24 @@ public class MatchServiceTest {
     @Mock
     private TurnRepository turnRepository;
 
+    @Mock
+    private TeamRepository teamRepository;
+
+    @Mock
+    private PlayerRepository playerRepository;
+
     @InjectMocks
     private MatchServiceImpl sut;
+
+    private Player playerOne;
+    private Player playerTwo;
+
+    private Player updatedPlayerOne;
+    private Player updatedPlayerTwo;
+
+    private Team teamOne;
+
+    private Team updatedTeamOne;
 
     private Turn turnOne;
     private Turn turnTwo;
@@ -50,9 +68,6 @@ public class MatchServiceTest {
     private MatchDto matchOneDto;
     private MatchDto matchTwoDto;
     private MatchDto matchThreeDto;
-    private MatchDto matchFourDto;
-    private MatchDto matchFiveDto;
-    private MatchDto matchSixDto;
 
     private MatchDto endedMatch;
 
@@ -62,17 +77,28 @@ public class MatchServiceTest {
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        Player playerOne = Player.builder().id(1L).nickname("Taz").build();
-        Player playerTwo = Player.builder().id(2L).nickname("Pasha").build();
+        playerOne = Player.builder().id(1L).nickname("Taz").rankPoints(300).build();
+        playerTwo = Player.builder().id(2L).nickname("Pasha").rankPoints(200).build();
+
+        updatedPlayerOne = Player.builder().id(1L).nickname("Taz").rankPoints(350).build();
+        updatedPlayerTwo = Player.builder().id(2L).nickname("Pasha").rankPoints(250).build();
 
         Player playerThree = Player.builder().id(3L).nickname("Byali").build();
         Player playerFour = Player.builder().id(4L).nickname("Neo").build();
         Player playerFive = Player.builder().id(5L).nickname("Snax").build();
 
-        Team teamOne = Team.builder()
+        teamOne = Team.builder()
                 .id(1L)
                 .name("GoldenTwo")
                 .players(Sets.newHashSet(playerOne, playerTwo))
+                .rankPoints(50)
+                .build();
+
+        updatedTeamOne = Team.builder()
+                .id(1L)
+                .name("GoldenTwo")
+                .players(Sets.newHashSet(updatedPlayerOne, updatedPlayerTwo))
+                .rankPoints(100)
                 .build();
 
         Team teamTwo = Team.builder()
@@ -117,19 +143,13 @@ public class MatchServiceTest {
                 .turns(Sets.newHashSet(turnTwo))
                 .scoreTeamOne(2).scoreTeamTwo(4).ended(false).build();
 
-        matchFourDto = matchFour.asDto();
-
         matchFive = Match.builder().id(4L).teamOne(teamOne).teamTwo(teamTwo)
                 .turns(Sets.newHashSet())
                 .scoreTeamOne(15).scoreTeamTwo(4).ended(false).build();
 
-        matchFiveDto = matchFive.asDto();
-
-        matchSix = Match.builder().id(4L).teamOne(teamOne).teamTwo(teamTwo)
+        matchSix = Match.builder().id(4L).teamOne(updatedTeamOne).teamTwo(teamTwo)
                 .turns(Sets.newHashSet(turnTwo))
                 .scoreTeamOne(16).scoreTeamTwo(4).ended(true).build();
-
-        matchSixDto = matchSix.asDto();
 
         endedMatch = MatchDto.builder().id(3L).teamOne(teamOne.asDto()).teamTwo(teamTwo.asDto())
                 .turns(new HashSet<>()).scoreTeamOne(1).scoreTeamTwo(16)
@@ -151,7 +171,7 @@ public class MatchServiceTest {
                 .playerNickname("Byali").kills(0).deaths(0).build();
 
         matchSummary = MatchSummaryDto.builder().matchId(4L).ended(true)
-                .scoreTeamOne(16).scoreTeamTwo(4).teamOne(teamOne.asDto()).teamTwo(teamTwo.asDto())
+                .scoreTeamOne(16).scoreTeamTwo(4).teamOne(updatedTeamOne.asDto()).teamTwo(teamTwo.asDto())
                 .teamOneStatistics(Sets.newHashSet(playerOneStats, playerTwoStats))
                 .teamTwoStatistics(Sets.newHashSet(playerThreeStats, playerFourStats, playerFveStats))
                 .build();
