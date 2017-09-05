@@ -93,6 +93,11 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${springfox.swagger.ui.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.kaczmarzyk</groupId>
+            <artifactId>specification-arg-resolver</artifactId>
+            <version>0.6.0</version>
+        </dependency>
 
     </dependencies>
 
