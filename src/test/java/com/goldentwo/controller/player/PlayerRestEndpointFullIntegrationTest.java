@@ -36,8 +36,8 @@ public class PlayerRestEndpointFullIntegrationTest {
 
     @Before
     public void init() {
-        playerRepository.deleteAll();
         teamRepository.deleteAll();
+        playerRepository.deleteAll();
     }
 
     @Test

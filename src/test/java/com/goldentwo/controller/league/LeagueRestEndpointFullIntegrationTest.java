@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -58,7 +59,7 @@ public class LeagueRestEndpointFullIntegrationTest {
         teamRepository.deleteAll();
         playerRepository.deleteAll();
 
-        for (int i = 1; i < 4; i++) {
+        for (int i = 1; i < 5; i++) {
             playerService.savePlayer(
                     PlayerDto.builder()
                             .name("name" + i)
@@ -88,28 +89,6 @@ public class LeagueRestEndpointFullIntegrationTest {
                 statusCode(200)
                 .body("name", is(leagueName))
                 .body("rounds", hasSize(3));
-    }
-
-    @Test
-    public void deleteLeagueTest() {
-        String leagueName = "LEAGUE";
-        Set<Team> teams = new HashSet<>(teamRepository.findAll());
-
-        Long leagueId = leagueRepository.save(League.builder().name(leagueName).teams(teams).build()).getId();
-
-        given().
-                port(port).
-                contentType(ContentType.JSON).
-                header("Accept", "application/json").
-                when().
-                delete("/api/v1/leagues/" + leagueId).
-                then().
-                statusCode(204);
-
-        League league = leagueRepository.findOne(leagueId);
-
-        assertThat(league)
-                .isNull();
     }
 
 }
