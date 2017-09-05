@@ -1,5 +1,6 @@
 package com.goldentwo.model;
 
+import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,17 +26,20 @@ public class Team {
     @Column(unique = true, nullable = false)
     private String name;
     @NotEmpty
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private Set<Player> players;
+    private int rankPoints;
 
     public TeamDto asDto() {
-        Set<String> playerNicknames = players.stream()
-                .map(Player::getNickname)
+        Set<PlayerDto> playerDtos = players.stream()
+                .map(Player::asDto)
                 .collect(Collectors.toSet());
 
         return TeamDto.builder()
+                .id(id)
                 .name(name)
-                .playerNicknames(playerNicknames)
+                .players(playerDtos)
+                .rankPoints(rankPoints)
                 .build();
     }
 }

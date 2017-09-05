@@ -1,13 +1,13 @@
 package com.goldentwo.service.impl;
 
 import com.goldentwo.dto.TournamentDto;
-import com.goldentwo.exception.PlayerException;
-import com.goldentwo.exception.TournamentException;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.model.Tournament;
-import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.model.TournamentMatch;
 import com.goldentwo.repository.TournamentRepository;
+import com.goldentwo.service.MatchesGeneratorService;
 import com.goldentwo.service.TournamentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,25 +24,26 @@ public class TournamentServiceImpl implements TournamentService {
 
     private TournamentRepository tournamentRepository;
 
-    private PlayerRepository playerRepository;
+    private MatchesGeneratorService matchesGeneratorService;
 
     @Autowired
-    TournamentServiceImpl(TournamentRepository tournamentRepository, PlayerRepository playerRepository) {
+    TournamentServiceImpl(TournamentRepository tournamentRepository,
+                          MatchesGeneratorService matchesGeneratorService) {
         this.tournamentRepository = tournamentRepository;
-        this.playerRepository = playerRepository;
+        this.matchesGeneratorService = matchesGeneratorService;
     }
 
     @Override
     public TournamentDto findTournamentById(Long id) {
         return Optional.ofNullable(tournamentRepository.findOne(id))
-                .orElseThrow(() -> new TournamentException("Tournament " + id + " doesn't exist!"))
+                .orElseThrow(() -> new NotFoundException("Tournament " + id + " doesn't exist!"))
                 .asDto();
     }
 
     @Override
     public TournamentDto findTournamentByName(String name) {
         return tournamentRepository.findByName(name)
-                .orElseThrow(() -> new TournamentException("Tournament " + name + " doesn't exist!"))
+                .orElseThrow(() -> new NotFoundException("Tournament " + name + " doesn't exist!"))
                 .asDto();
     }
 
@@ -54,42 +55,48 @@ public class TournamentServiceImpl implements TournamentService {
     }
 
     @Override
-    public TournamentDto saveTournament(TournamentDto tournamentDto) {
-        Set<Team> teams;
-
-        if (tournamentDto.getTeams().size() > 0) {
-
-                teams = tournamentDto.getTeams()
-                        .stream().map(teamDto -> {
-                            Set<Player> teamMates = new HashSet<>();
-                            teamDto.getPlayerNicknames().forEach(
-                                    nickname -> {
-                                        teamMates.add(
-                                                playerRepository
-                                                        .findByNickname(nickname)
-                                                        .orElseThrow(() -> new PlayerException("Player not found!"))
-                                        );
-                                    }
-                            );
-
-                            return Team.builder()
-                                    .id(teamDto.getId())
-                                    .name(teamDto.getName())
-                                    .players(teamMates)
-                                    .build();
-                        }).collect(Collectors.toSet());
-
-        } else {
-            teams = new HashSet<>();
-        }
+    public TournamentDto saveTournament(TournamentDto tournamentDto, MatchesGeneratorService.MatchGeneratorType type) {
+        Set<Team> teams = getTeams(tournamentDto);
+        Set<TournamentMatch> tournamentMatches = matchesGeneratorService.generateTournamentMatches(teams, type);
 
         return tournamentRepository.saveAndFlush(
                 Tournament.builder()
                         .id(tournamentDto.getId())
-                .name(tournamentDto.getName())
-                .teams(teams)
-                .build()
+                        .name(tournamentDto.getName())
+                        .teams(teams)
+                        .matches(tournamentMatches)
+                        .build()
         ).asDto();
+    }
+
+    private Set<Team> getTeams(TournamentDto tournamentDto) {
+        Set<Team> teams;
+        if (!tournamentDto.getTeams().isEmpty()) {
+
+            teams = tournamentDto.getTeams().stream()
+                    .map(teamDto -> {
+                        Set<Player> players = teamDto.getPlayers().stream()
+                                .map((playerDto -> Player.builder()
+                                        .id(playerDto.getId())
+                                        .name(playerDto.getName())
+                                        .surname(playerDto.getSurname())
+                                        .nickname(playerDto.getNickname())
+                                        .rankPoints(playerDto.getRankPoints())
+                                        .build()))
+                                .collect(Collectors.toSet());
+
+                        return Team.builder()
+                                .id(teamDto.getId())
+                                .name(teamDto.getName())
+                                .players(players)
+                                .rankPoints(teamDto.getRankPoints())
+                                .build();
+                    }).collect(Collectors.toSet());
+
+        } else {
+            teams = new HashSet<>();
+        }
+        return teams;
     }
 
     @Override

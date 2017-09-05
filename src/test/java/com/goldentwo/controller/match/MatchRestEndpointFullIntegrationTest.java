@@ -1,7 +1,9 @@
 package com.goldentwo.controller.match;
 
 import com.goldentwo.dto.MatchDto;
+import com.goldentwo.initializer.InitDatabase;
 import com.jayway.restassured.path.json.JsonPath;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,14 @@ public class MatchRestEndpointFullIntegrationTest {
 
     @Autowired
     TestRestTemplate restTemplate;
+
+    @Autowired
+    InitDatabase initDatabase;
+
+    @Before
+    public void setUp() {
+        initDatabase.initDB();
+    }
 
     @Test
     public void ensureThatAllMatchesAreReturnedFromEndpoint() {

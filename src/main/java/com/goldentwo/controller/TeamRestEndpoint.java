@@ -1,6 +1,7 @@
 package com.goldentwo.controller;
 
 import com.goldentwo.dto.TeamDto;
+import com.goldentwo.dto.TeamStatisticsDto;
 import com.goldentwo.exception.TeamException;
 import com.goldentwo.service.TeamService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,14 @@ public class TeamRestEndpoint {
         return teamService.findAllTeams();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public TeamDto findTeamById(@PathVariable Long id) {
         return teamService.findTeamById(id);
+    }
+
+    @GetMapping("/{id}/stats")
+    public TeamStatisticsDto findTeamStatistics(@PathVariable Long id) {
+        return teamService.findTeamStatistics(id);
     }
 
     @GetMapping("/find")
@@ -48,12 +54,4 @@ public class TeamRestEndpoint {
         return teamService.deleteTeam(id);
     }
 
-    @ExceptionHandler(TeamException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(TeamException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("Message", ex.getMessage());
-
-        return response;
-    }
 }

@@ -1,13 +1,12 @@
 package com.goldentwo.service.tournament;
 
-import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
-import com.goldentwo.exception.TournamentException;
-import com.goldentwo.model.Player;
-import com.goldentwo.model.Team;
-import com.goldentwo.model.Tournament;
-import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.exception.NotFoundException;
+import com.goldentwo.model.*;
+import com.goldentwo.repository.TournamentMatchRepository;
 import com.goldentwo.repository.TournamentRepository;
+import com.goldentwo.service.MatchService;
+import com.goldentwo.service.MatchesGeneratorService;
 import com.goldentwo.service.impl.TournamentServiceImpl;
 import com.google.common.collect.Sets;
 import org.junit.Before;
@@ -19,9 +18,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
@@ -33,55 +30,68 @@ public class TournamentServiceTest {
     private TournamentRepository tournamentRepository;
 
     @Mock
-    private PlayerRepository playerRepository;
+    private TournamentMatchRepository tournamentMatchRepository;
+
+    @Mock
+    private MatchesGeneratorService matchesGeneratorService;
+
+    @Mock
+    private MatchService matchService;
 
     @InjectMocks
     private TournamentServiceImpl sut;
 
-    private Team teamOne;
-    private Team teamTwo;
-    private TeamDto teamOneDto;
-    private TeamDto teamTwoDto;
+    private TournamentMatch tournamentMatchOne;
 
     private Tournament tournamentOne;
     private Tournament tournamentTwo;
-    private Tournament tournamentWithoutId;
     private TournamentDto tournamentOneDto;
     private TournamentDto tournamentTwoDto;
     private TournamentDto tournamentWithoutIdDto;
-
-    private Player playerOne;
-    private Player playerTwo;
 
     @Before
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        playerOne = Player.builder().id(1L).nickname("Taz").build();
-        playerTwo = Player.builder().id(2L).nickname("Pasha").build();
+        Player playerOne = Player.builder().id(1L).nickname("Taz").build();
+        Player playerTwo = Player.builder().id(2L).nickname("Pasha").build();
 
         Player playerThree = Player.builder().id(3L).nickname("Byali").build();
         Player playerFour = Player.builder().id(4L).nickname("Neo").build();
         Player playerFive = Player.builder().id(5L).nickname("Snax").build();
 
-        teamOne = Team.builder()
+        Team teamOne = Team.builder()
                 .id(1L)
                 .name("GoldenTwo")
                 .players(Sets.newHashSet(playerOne, playerTwo))
                 .build();
-        teamOneDto = teamOne.asDto();
 
-        teamTwo = Team.builder()
+        Team teamTwo = Team.builder()
                 .name("GoldenFive")
                 .id(2L)
                 .players(Sets.newHashSet(playerOne, playerTwo, playerThree, playerFour, playerFive))
                 .build();
-        teamTwoDto = teamTwo.asDto();
+
+        Team teamThree = Team.builder()
+                .id(3L)
+                .name("GoldenTwo2")
+                .players(Sets.newHashSet(playerOne, playerTwo))
+                .build();
+
+        tournamentMatchOne = TournamentMatch.builder()
+                .id(1L)
+                .match(Match.builder()
+                        .id(1L).ended(false).scoreTeamOne(1).scoreTeamTwo(2)
+                        .teamOne(teamOne).teamTwo(teamTwo).build())
+                .nextRoundId(null)
+                .round(1)
+                .build();
 
         tournamentOne = Tournament.builder()
                 .id(1L)
                 .name("ELeague")
-                .teams(Sets.newHashSet(teamOne))
+                .teams(Sets.newHashSet(teamOne, teamThree))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentOneDto = tournamentOne.asDto();
@@ -90,14 +100,16 @@ public class TournamentServiceTest {
                 .id(2L)
                 .name("PGL")
                 .teams(Sets.newHashSet(teamTwo, teamOne))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentTwoDto = tournamentTwo.asDto();
 
-        tournamentWithoutId = Tournament.builder()
+        Tournament tournamentWithoutId = Tournament.builder()
                 .id(null)
                 .name("ELeague")
-                .teams(Sets.newHashSet(teamOne))
+                .teams(Sets.newHashSet(teamOne, teamThree))
+                .matches(Sets.newHashSet(tournamentMatchOne))
                 .build();
 
         tournamentWithoutIdDto = tournamentWithoutId.asDto();
@@ -118,7 +130,7 @@ public class TournamentServiceTest {
                 .isEqualTo(tournamentOneDto);
     }
 
-    @Test(expected = TournamentException.class)
+    @Test(expected = NotFoundException.class)
     public void findTournamentByIdWhenNotExist() {
         Long tournamentId = 4L;
 
@@ -144,13 +156,13 @@ public class TournamentServiceTest {
                 .isEqualTo(tournamentOneDto);
     }
 
-    @Test(expected = TournamentException.class)
+    @Test(expected = NotFoundException.class)
     public void findTournamentByNameWhenNotExist() {
         String tournamentName = "ESL One";
 
         Mockito
                 .when(tournamentRepository.findByName(tournamentName))
-                .thenReturn(Optional.ofNullable(null));
+                .thenReturn(Optional.empty());
 
         sut.findTournamentByName(tournamentName);
     }
@@ -174,21 +186,34 @@ public class TournamentServiceTest {
 
     @Test
     public void saveTournamentTest() {
-        Mockito
-                .when(tournamentRepository.saveAndFlush(any()))
-                .thenReturn(tournamentOne);
-        Mockito
-                .when(playerRepository.findByNickname(playerOne.getNickname()))
-                .thenReturn(Optional.ofNullable(playerOne));
-        Mockito
-                .when(playerRepository.findByNickname(playerTwo.getNickname()))
-                .thenReturn(Optional.ofNullable(playerTwo));
+        Set<TournamentMatch> matches = tournamentOne.getMatches();
 
-        TournamentDto savedTournamentFromSut = sut.saveTournament(tournamentWithoutIdDto);
+        mockSaveTournamentComponents(matches);
+
+        TournamentDto savedTournamentFromSut =
+                sut.saveTournament(tournamentWithoutIdDto, MatchesGeneratorService.MatchGeneratorType.RANDOM);
 
         assertThat(savedTournamentFromSut)
                 .isNotNull()
                 .isEqualTo(tournamentOneDto);
+    }
+
+    private void mockSaveTournamentComponents(Set<TournamentMatch> matches) {
+        Mockito
+                .when(tournamentRepository.saveAndFlush(any()))
+                .thenReturn(tournamentOne);
+
+        Mockito
+                .when(matchService.createMatch(any()))
+                .thenReturn(tournamentMatchOne.asDto().getMatch());
+
+        Mockito
+                .when(tournamentMatchRepository.save((TournamentMatch) any()))
+                .thenReturn(tournamentMatchOne);
+
+        Mockito
+                .when(matchesGeneratorService.generateTournamentMatches(any(), any()))
+                .thenReturn(matches);
     }
 
     @Test

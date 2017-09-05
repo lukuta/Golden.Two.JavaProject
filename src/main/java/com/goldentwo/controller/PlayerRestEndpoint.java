@@ -2,6 +2,7 @@ package com.goldentwo.controller;
 
 import com.goldentwo.aspect.annotation.Monitored;
 import com.goldentwo.dto.PlayerDto;
+import com.goldentwo.dto.PlayerStatisticsDto;
 import com.goldentwo.exception.PlayerException;
 import com.goldentwo.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,11 @@ public class PlayerRestEndpoint {
         return playerService.findPlayerById(id);
     }
 
+    @GetMapping(value = "/{id}/stats")
+    public PlayerStatisticsDto findPlayerStatistics(@PathVariable Long id) {
+        return playerService.findPlayerStatistics(id);
+    }
+
     @GetMapping(value = "find")
     public PlayerDto findPlayerByNickname(@RequestParam("nickname") String nickname){
         return playerService.findPlayerByNickname(nickname);
@@ -51,12 +57,4 @@ public class PlayerRestEndpoint {
         return playerService.deletePlayer(id);
     }
 
-    @ExceptionHandler(PlayerException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleException(PlayerException ex) {
-        Map<String, String> response = new HashMap<>();
-        response.put("Message: ", ex.getMessage());
-
-        return response;
-    }
 }

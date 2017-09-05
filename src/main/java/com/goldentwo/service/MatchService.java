@@ -1,6 +1,8 @@
 package com.goldentwo.service;
 
 import com.goldentwo.dto.MatchDto;
+import com.goldentwo.dto.MatchSummaryDto;
+import com.goldentwo.dto.TurnDto;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -10,7 +12,13 @@ public interface MatchService {
 
     List<MatchDto> findAllMatches();
 
-    MatchDto saveMatch(MatchDto match);
+    MatchDto createMatch(MatchDto match);
+
+    MatchDto updateMatch(MatchDto match);
+
+    TurnDto addTurn(Long matchId, TurnDto turnDto);
+
+    MatchSummaryDto getMatchSummary(Long matchId);
 
     ResponseEntity deleteMatch(Long id);
 }

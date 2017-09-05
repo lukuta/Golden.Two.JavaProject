@@ -1,8 +1,10 @@
 package com.goldentwo.controller.tournament;
 
 import com.goldentwo.controller.TournamentRestEndpoint;
+import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
 import com.goldentwo.dto.TournamentDto;
+import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.exception.TournamentException;
 import com.goldentwo.service.TournamentService;
 import com.google.common.collect.Sets;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.Arrays;
 import java.util.List;
 
+import static com.goldentwo.service.MatchesGeneratorService.MatchGeneratorType;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,14 +46,41 @@ public class TournamentRestEndpointTest {
     public void initialize() {
         MockitoAnnotations.initMocks(this);
 
-        TeamDto teamOne = TeamDto.builder()
-                .name("GoldenTwo")
-                .playerNicknames(Sets.newHashSet("qtek", "klimeck"))
+        PlayerDto playerOne = PlayerDto.builder()
+                .id(1L)
+                .nickname("Taz")
+                .name("Wiktor")
+                .surname("Wojtas")
                 .build();
 
+        PlayerDto playerTwo = PlayerDto.builder()
+                .id(2L)
+                .nickname("Neo")
+                .name("Filip")
+                .surname("Kubski")
+                .build();
+
+        PlayerDto playerThree = PlayerDto.builder()
+                .id(3L)
+                .nickname("olofmeister")
+                .name("Olof")
+                .surname("Kyaber")
+                .build();
+
+        PlayerDto playerFour = PlayerDto.builder()
+                .id(4L)
+                .nickname("JW")
+                .name("Jaspher")
+                .surname("Wild")
+                .build();
+
+        TeamDto teamOne = TeamDto.builder()
+                .name("GoldenTwo")
+                .players(Sets.newHashSet(playerOne, playerTwo))
+                .build();
         TeamDto teamTwo = TeamDto.builder()
                 .name("GoldenFive")
-                .playerNicknames(Sets.newHashSet("Taz", "Pasha", "Byali", "Neo", "Snax"))
+                .players(Sets.newHashSet(playerThree, playerFour))
                 .build();
 
         tournamentOne = TournamentDto.builder()
@@ -110,7 +140,7 @@ public class TournamentRestEndpointTest {
 
         Mockito
                 .when(tournamentService.findTournamentById(tournamentId))
-                .thenThrow(new TournamentException("Tournament " + tournamentId + "doesn't exist"));
+                .thenThrow(new NotFoundException("Tournament " + tournamentId + "doesn't exist"));
 
         mockMvc.perform(get("/tournaments/{id}", tournamentId))
                 .andExpect(status().isNotFound());
@@ -132,12 +162,12 @@ public class TournamentRestEndpointTest {
     }
 
     @Test
-    public void saveTournamentTest() {
+    public void simpleSaveTournamentTest() {
         Mockito
-                .when(tournamentService.saveTournament(tournamentWithoutId))
+                .when(tournamentService.saveTournament(tournamentWithoutId, MatchGeneratorType.RANDOM))
                 .thenReturn(tournamentTwo);
 
-        TournamentDto tournamentDto = sut.createOrUpdateTournament(tournamentWithoutId);
+        TournamentDto tournamentDto = sut.createOrUpdateTournament(tournamentWithoutId, MatchGeneratorType.RANDOM);
 
         assertThat(tournamentDto)
                 .isNotNull()
