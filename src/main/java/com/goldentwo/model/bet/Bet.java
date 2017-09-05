@@ -22,7 +22,7 @@ public class Bet {
 
     private String typer;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     private Match match;
 
     private BetType betType;

@@ -47,11 +47,12 @@ public class Oauth2SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/**").authorizeRequests()
                 .antMatchers("/**").permitAll()
+                .antMatchers("/bets/**").permitAll()
                 .anyRequest().authenticated()
                 .and().exceptionHandling().authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/"))
                 .and().logout().logoutSuccessUrl("/").permitAll()
-                .and().csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .and().addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
+                .and().csrf().disable()//.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .addFilterBefore(ssoFilter(), BasicAuthenticationFilter.class);
     }
 
     private Filter ssoFilter() {
