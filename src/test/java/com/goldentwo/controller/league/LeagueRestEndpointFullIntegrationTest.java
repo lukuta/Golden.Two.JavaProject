@@ -3,12 +3,9 @@ package com.goldentwo.controller.league;
 import com.goldentwo.dto.LeagueDto;
 import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
-import com.goldentwo.dto.TournamentDto;
-import com.goldentwo.model.Player;
+import com.goldentwo.model.League;
 import com.goldentwo.model.Team;
-import com.goldentwo.repository.LeagueRepository;
-import com.goldentwo.repository.PlayerRepository;
-import com.goldentwo.repository.TeamRepository;
+import com.goldentwo.repository.*;
 import com.goldentwo.service.PlayerService;
 import com.jayway.restassured.http.ContentType;
 import org.junit.Before;
@@ -20,12 +17,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.CoreMatchers.is;
 import static com.jayway.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -47,13 +46,19 @@ public class LeagueRestEndpointFullIntegrationTest {
     @Autowired
     LeagueRepository leagueRepository;
 
+    @Autowired
+    MatchRepository matchRepository;
+
+    @Autowired
+    RoundRepository roundRepository;
+
     @Before
     public void init() {
         leagueRepository.deleteAll();
         teamRepository.deleteAll();
         playerRepository.deleteAll();
 
-        for (int i = 1; i < 9; i++) {
+        for (int i = 1; i < 4; i++) {
             playerService.savePlayer(
                     PlayerDto.builder()
                             .name("name" + i)
@@ -82,7 +87,29 @@ public class LeagueRestEndpointFullIntegrationTest {
                 then().
                 statusCode(200)
                 .body("name", is(leagueName))
-                .body("rounds", hasSize(7));
+                .body("rounds", hasSize(3));
+    }
+
+    @Test
+    public void deleteLeagueTest() {
+        String leagueName = "LEAGUE";
+        Set<Team> teams = new HashSet<>(teamRepository.findAll());
+
+        Long leagueId = leagueRepository.save(League.builder().name(leagueName).teams(teams).build()).getId();
+
+        given().
+                port(port).
+                contentType(ContentType.JSON).
+                header("Accept", "application/json").
+                when().
+                delete("/api/v1/leagues/" + leagueId).
+                then().
+                statusCode(204);
+
+        League league = leagueRepository.findOne(leagueId);
+
+        assertThat(league)
+                .isNull();
     }
 
 }
