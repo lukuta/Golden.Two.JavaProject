@@ -6,6 +6,7 @@ import com.goldentwo.model.Team;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TeamRepository;
 import com.jayway.restassured.http.ContentType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,7 +66,7 @@ public class PlayerRestEndpointFullIntegrationTest {
                 .post("/api/v1/players")
                 .then()
                 .statusCode(200)
-                .body("id", is(1));
+                .body("id", instanceOf(Integer.class));
 
         Team team = teamRepository.findByName("klimeck")
                 .orElse(null);
