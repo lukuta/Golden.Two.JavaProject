@@ -1,10 +1,10 @@
-package com.goldentwo.controller.player;
+package com.goldentwo.controller.team;
 
-import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.repository.PlayerRepository;
 import com.goldentwo.repository.TeamRepository;
+import com.google.common.collect.Sets;
 import com.jayway.restassured.http.ContentType;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,11 +19,12 @@ import static com.jayway.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.instanceOf;
 
-
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PlayerRestEndpointFullIntegrationTest {
+public class TeamRestEndpointFullIntegrationTest {
+
+    private Long teamId;
 
     @LocalServerPort
     private int port;
@@ -36,39 +37,45 @@ public class PlayerRestEndpointFullIntegrationTest {
 
     @Before
     public void init() {
-        playerRepository.deleteAll();
         teamRepository.deleteAll();
+        playerRepository.deleteAll();
+
+        Player playerOne = playerRepository.save(Player.builder()
+                .name("Konrad")
+                .surname("Klimczak")
+                .nickname("klimeck")
+                .rankPoints(100)
+                .build());
+
+        Player playerTwo = playerRepository.save(Player.builder()
+                .name("Łukasz")
+                .surname("Kuta")
+                .nickname("qtek")
+                .rankPoints(100)
+                .build());
+
+        teamId = teamRepository.save(Team.builder()
+                .name("CRUDTeams")
+                .rankPoints(200)
+                .players(Sets.newHashSet(playerOne, playerTwo))
+                .build()).getId();
     }
 
     @Test
-    public void createPlayerShouldCreateTeams() {
+    public void findTeamTest() {
         given()
                 .port(port)
                 .contentType(ContentType.JSON)
                 .header("Accept", "application/json")
-                .body(PlayerDto.builder()
-                        .name("Konrad")
-                        .surname("Klimczak")
-                        .nickname("klimeck")
-                        .rankPoints(100)
-                        .build())
                 .when()
-                .post("/api/v1/players")
+                .delete("/api/v1/teams/" + teamId)
                 .then()
-                .statusCode(200)
-                .body("id", instanceOf(Integer.class));
+                .statusCode(200);
 
-        Team team = teamRepository.findByName("klimeck")
-                .orElse(null);
+        Team team = teamRepository.findByName("CRUDTeams").orElse(null);
 
         assertThat(team)
-                .isNotNull();
-
-        assertThat(team.getPlayers())
-                .hasSize(1);
-
-        assertThat(team.getPlayers().iterator().next().getNickname())
-                .isEqualTo("klimeck");
-
+                .isNull();
     }
+
 }
