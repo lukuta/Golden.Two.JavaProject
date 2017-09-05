@@ -3,6 +3,8 @@ package com.goldentwo.controller.match;
 import com.goldentwo.controller.MatchRestEndpoint;
 import com.goldentwo.model.Match;
 import com.goldentwo.repository.MatchRepository;
+import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.repository.TurnRepository;
 import com.goldentwo.service.MatchService;
 import org.junit.Test;
@@ -38,6 +40,12 @@ public class MatchRestEndpointMockMvcBasedTest {
 
     @MockBean
     private TurnRepository turnRepositoryMock;
+
+    @MockBean
+    private TeamRepository teamRepository;
+
+    @MockBean
+    private PlayerRepository playerRepository;
 
     @Test
     public void ensureThatMatchesAreAddedProperly() throws Exception {
