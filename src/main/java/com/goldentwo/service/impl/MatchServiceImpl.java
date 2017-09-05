@@ -4,8 +4,11 @@ import com.goldentwo.dto.*;
 import com.goldentwo.exception.BadRequestException;
 import com.goldentwo.exception.NotFoundException;
 import com.goldentwo.model.Match;
+import com.goldentwo.model.Player;
 import com.goldentwo.model.Turn;
 import com.goldentwo.repository.MatchRepository;
+import com.goldentwo.repository.PlayerRepository;
+import com.goldentwo.repository.TeamRepository;
 import com.goldentwo.repository.TurnRepository;
 import com.goldentwo.service.MatchService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,15 +23,22 @@ public class MatchServiceImpl implements MatchService {
 
     public static final int TURN_POINT_VALUE = 1;
     public static final int WINNING_SCORE = 16;
+    public static final int RANK_POINTS_FOR_WIN = 50;
 
     private MatchRepository matchRepository;
 
     private TurnRepository turnRepository;
 
+    private TeamRepository teamRepository;
+
+    private PlayerRepository playerRepository;
+
     @Autowired
-    public MatchServiceImpl(MatchRepository matchRepository, TurnRepository turnRepository) {
+    public MatchServiceImpl(MatchRepository matchRepository, TurnRepository turnRepository, TeamRepository teamRepository, PlayerRepository playerRepository) {
         this.matchRepository = matchRepository;
         this.turnRepository = turnRepository;
+        this.teamRepository = teamRepository;
+        this.playerRepository = playerRepository;
     }
 
     @Override
@@ -88,13 +98,26 @@ public class MatchServiceImpl implements MatchService {
             matchDto.setScoreTeamTwo(matchDto.getScoreTeamTwo() + TURN_POINT_VALUE);
         }
 
-        if (matchDto.getScoreTeamOne() == WINNING_SCORE || matchDto.getScoreTeamTwo() == WINNING_SCORE) {
+        if (matchDto.getScoreTeamOne() == WINNING_SCORE) {
             matchDto.setEnded(true);
+            updateRankingPoints(matchDto.getTeamOne());
+        } else if (matchDto.getScoreTeamTwo() == WINNING_SCORE) {
+            matchDto.setEnded(true);
+            updateRankingPoints(matchDto.getTeamTwo());
         }
 
         updateMatch(matchDto);
 
         return savedTurn.asDto();
+    }
+
+    private void updateRankingPoints(TeamDto teamDto) {
+        teamDto.setRankPoints(teamDto.getRankPoints() + RANK_POINTS_FOR_WIN);
+        for (PlayerDto playerDto : teamDto.getPlayers()) {
+            playerDto.setRankPoints(playerDto.getRankPoints() + RANK_POINTS_FOR_WIN);
+            playerRepository.save(playerDto.asEntity());
+        }
+        teamRepository.save(teamDto.asEntity());
     }
 
     @Override
