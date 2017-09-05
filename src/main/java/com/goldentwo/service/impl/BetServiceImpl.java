@@ -39,6 +39,7 @@ public class BetServiceImpl implements BetService {
                 .betStatus(BetStatus.OPEN)
                 .match(match)
                 .typer(principalName)
+                .betType(betDto.getBetType())
                 .build();
 
         return bettingRepository.saveAndFlush(bet);
