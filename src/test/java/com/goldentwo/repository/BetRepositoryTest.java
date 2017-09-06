@@ -36,7 +36,7 @@ public class BetRepositoryTest {
         for (int i = 0; i < dbSize; i++) {
             bettingRepository.saveAndFlush(
                     Bet.builder()
-                            .betStatus(BetStatus.OPEN)
+                            .betStatus(i % 2 == 0 ? BetStatus.OPEN : BetStatus.CLOSED)
                             .typer("typer" + (i % typerAmount))
                             .build()
             );
@@ -53,6 +53,13 @@ public class BetRepositoryTest {
         List<Bet> allByTyper = bettingRepository.findAllByTyper("typer" + (typerAmount - 1));
         assertThat(allByTyper)
                 .hasSize(dbSize / typerAmount);
+    }
+
+    @Test
+    public void ensureThatRepositoryFoundAllOpenBets() {
+        List<Bet> allByBetStatus = bettingRepository.findAllByBetStatus(BetStatus.OPEN);
+        assertThat(allByBetStatus)
+                .hasSize(dbSize / 2);
     }
 }
 
