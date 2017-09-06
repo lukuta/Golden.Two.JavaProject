@@ -1,9 +1,7 @@
 package com.goldentwo.controller.bet;
 
-import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.model.Match;
 import com.goldentwo.repository.MatchRepository;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
