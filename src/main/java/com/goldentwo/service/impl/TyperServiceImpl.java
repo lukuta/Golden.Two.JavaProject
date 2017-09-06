@@ -22,7 +22,7 @@ public class TyperServiceImpl implements TyperService {
     @Override
     public List<Typer> getTyperRanking() {
         List<Typer> typerRepositoryAll = typerRepository.findAll();
-        typerRepositoryAll.sort(Comparator.comparing(Typer::getPoints));
+        typerRepositoryAll.sort(Comparator.comparing(Typer::getPoints).reversed());
 
         return typerRepositoryAll;
     }
