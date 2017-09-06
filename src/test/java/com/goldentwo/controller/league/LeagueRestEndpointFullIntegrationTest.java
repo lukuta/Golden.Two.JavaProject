@@ -1,5 +1,6 @@
 package com.goldentwo.controller.league;
 
+import com.goldentwo.Janitor;
 import com.goldentwo.dto.LeagueDto;
 import com.goldentwo.dto.PlayerDto;
 import com.goldentwo.dto.TeamDto;
@@ -36,26 +37,29 @@ public class LeagueRestEndpointFullIntegrationTest {
     private int port;
 
     @Autowired
-    PlayerService playerService;
+    private PlayerService playerService;
 
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
 
     @Autowired
-    PlayerRepository playerRepository;
+    private PlayerRepository playerRepository;
 
     @Autowired
-    LeagueRepository leagueRepository;
+    private LeagueRepository leagueRepository;
 
     @Autowired
-    MatchRepository matchRepository;
+    private MatchRepository matchRepository;
 
     @Autowired
-    RoundRepository roundRepository;
+    private RoundRepository roundRepository;
+
+    @Autowired
+    private Janitor janitor;
 
     @Before
     public void init() {
-        leagueRepository.deleteAll();
+        janitor.clearRepos();
         for (int i = 1; i < 5; i++) {
             playerService.savePlayer(
                     PlayerDto.builder()
