@@ -1,5 +1,6 @@
 package com.goldentwo.controller.team;
 
+import com.goldentwo.Janitor;
 import com.goldentwo.model.Player;
 import com.goldentwo.model.Team;
 import com.goldentwo.repository.PlayerRepository;
@@ -30,15 +31,17 @@ public class TeamRestEndpointFullIntegrationTest {
     private int port;
 
     @Autowired
-    PlayerRepository playerRepository;
+    private PlayerRepository playerRepository;
 
     @Autowired
-    TeamRepository teamRepository;
+    private TeamRepository teamRepository;
+
+    @Autowired
+    private Janitor janitor;
 
     @Before
     public void init() {
-        teamRepository.deleteAll();
-        playerRepository.deleteAll();
+        janitor.clearRepos();
 
         Player playerOne = playerRepository.save(Player.builder()
                 .name("Konrad")
